@@ -1,0 +1,418 @@
+Network Working Group                                         J. Agent
+Request for Comments: BFILES-01                            June 27, 2025
+Category: Informational
+
+                bfiles: Bundled File Format and Operations
+
+Status of this Memo
+
+   This memo provides information for the developer community on the
+   `bfiles` utility, its bundled file format, and the processes for
+   creating (bundling) and extracting (unbundling) these archives.
+   Distribution of this memo is unlimited.
+
+Abstract
+
+   The `bfiles` utility provides a mechanism for consolidating multiple
+   files and their associated metadata into a single, human-readable
+   text-based archive file, referred to as a "bfiles bundle". This
+   document specifies the format of a bfiles bundle and the logical
+   processes for bundling files into this format and unbundling them
+   back into their original file structure. The format is designed to
+   be relatively simple to parse, inspect manually, and manage with
+   standard text manipulation tools, while also supporting features like
+   file chunking for large content and checksumming for integrity.
+
+Table of Contents
+
+   1. Introduction ............................................... X
+      1.1. Goals ................................................ X
+      1.2. Design Principles .................................... X
+   2. Terminology ................................................ X
+   3. Bundle File Format Specification ........................... X
+      3.1. Overall Structure .................................... X
+      3.2. Bundle Header ........................................ X
+      3.3. File Entry ........................................... X
+         3.3.1. File Metadata Line ............................ X
+         3.3.2. Content Delimiters (BOF/EOF) .................. X
+         3.3.3. File Content .................................. X
+      3.4. Bundle Footer (Summary) .............................. X
+   4. Bundling Process ........................................... X
+      4.1. Configuration and Initialization ..................... X
+      4.2. File Collection and Filtering ........................ X
+      4.3. Metadata Generation .................................. X
+      4.4. Content Reading and Encoding ......................... X
+      4.5. Chunking ............................................. X
+      4.6. Writing the Bundle ................................... X
+   5. Unbundling Process ......................................... X
+      5.1. Configuration and Initialization ..................... X
+      5.2. Bundle Parsing ....................................... X
+         5.2.1. Identifying File Entries ...................... X
+         5.2.2. Extracting Metadata and Content ............... X
+      5.3. File Reconstruction .................................. X
+         5.3.1. Directory Creation ............................ X
+         5.3.2. Writing File Content .......................... X
+         5.3.3. Chunk Reassembly .............................. X
+      5.4. Post-Extraction (Verification - Optional) ............ X
+   6. Metadata Details ........................................... X
+      6.1. Standard Fields ...................................... X
+      6.2. Chunk-Specific Fields ................................ X
+      6.3. Extensibility ........................................ X
+   7. Error Handling ............................................. X
+      7.1. Bundling Errors ...................................... X
+      7.2. Unbundling Errors .................................... X
+   8. Security Considerations .................................... X
+   9. IANA Considerations ........................................ X
+   10. Acknowledgements .......................................... X
+   11. References ................................................ X
+
+1. Introduction
+
+   The `bfiles` utility addresses the need to package multiple files,
+   typically source code or text-based assets, into a single file.
+   This is useful for contexts such as providing input to Large
+   Language Models (LLMs), creating simple archives for review, or
+   transmitting a collection of related text files as one item.
+
+   1.1. Goals
+
+      * Simplicity: The format should be easy to understand and parse.
+      * Human-Readability: The bundle should be inspectable with standard
+        text editors.
+      * Metadata Inclusion: Each file should be accompanied by relevant
+        metadata (e.g., path, size, checksum).
+      * Integrity: Support for checksums to verify file integrity.
+      * Large File Handling: Mechanism for chunking large files.
+      * Extensibility: Allow for future additions to metadata fields.
+
+   1.2. Design Principles
+
+      * Text-Based: The entire bundle is a text file, typically UTF-8
+        encoded.
+      * Clear Delimiters: Unambiguous markers for different sections of
+        the bundle and individual files.
+      * Line-Oriented Metadata: Metadata is generally presented in a
+        line-based format for ease of parsing.
+
+2. Terminology
+
+   * Bundle: A bfiles archive file containing one or more File Entries.
+   * File Entry: A representation of a single original file within the
+     Bundle, consisting of a Metadata Line and its Content.
+   * Metadata Line: A line starting with "### FILE" that describes an
+     original file or a chunk of a file.
+   * BOF (Beginning of File) Marker: A line containing "<<< BOF <<<",
+     indicating the start of a File Entry's content.
+   * EOF (End of File) Marker: A line containing ">>> EOF >>>",
+     indicating the end of a File Entry's content.
+   * Content: The original data of the file, stored between BOF and EOF
+     markers.
+   * Chunk: A segment of a larger file, stored as a separate File Entry
+     with specific chunk metadata.
+   * Bundler: The process or component responsible for creating a Bundle.
+   * Unbundler: The process or component responsible for extracting files
+     from a Bundle.
+   * Root Directory: The base directory from which files are collected
+     during bundling. Relative paths in metadata are typically anchored
+     to this root.
+
+3. Bundle File Format Specification
+
+   3.1. Overall Structure
+
+      A bfiles bundle has the following general structure:
+
+      1. Optional Informational Preamble (2 lines)
+      2. Bundle Header
+      3. Zero or more File Entries
+      4. Bundle Footer (Summary)
+
+      Example:
+      ```
+      Attention: The following text is a 'bfiles' bundle...
+      Parse and analyze the content between '<<< BOF <<<' and...
+
+      --- START OF BFILE <bundle_name.txt> ---
+      bfiles bundle generated on: <ISO8601_datetime>
+      Config: hash=<algo>, gitignore=<yes/no>, followlinks=<yes/no>
+      Comment: <optional_user_comment>
+      ---
+
+      ### FILE 1: path/to/file1.txt | size=123B; tokens=30; op=+; cs=<checksum_algo>:<checksum_hex> ###
+      <<< BOF <<<
+      Content of file1.txt
+      >>> EOF >>>
+
+      ### FILE 2: path/to/large_file.txt (Chunk 1/2) | size=2048B; tokens=500; op=C; cs=<checksum_algo>:<checksum_hex>; chunk_tokens=250 ###
+      <<< BOF <<<
+      First chunk of large_file.txt
+      >>> EOF >>>
+
+      ### FILE 3: path/to/large_file.txt (Chunk 2/2) | size=2048B; tokens=500; op=C; cs=<checksum_algo>:<checksum_hex>; chunk_tokens=250 ###
+      <<< BOF <<<
+      Second chunk of large_file.txt
+      >>> EOF >>>
+
+      ### BUNDLE SUMMARY ###
+      ...
+      --- END OF BFILE <bundle_name.txt> ---
+      ```
+
+   3.2. Bundle Header
+
+      The Bundle Header provides information about the bundle itself and
+      the configuration used to create it.
+
+      * Starts with a line: `--- START OF BFILE <bundle_name.txt> ---`
+      * `bfiles bundle generated on: <ISO8601_datetime>`: Timestamp of
+        bundle creation.
+      * `Config: hash=<algo>, gitignore=<yes/no>, followlinks=<yes/no>`:
+        Key configuration parameters.
+      * `Comment: <optional_user_comment>`: An optional comment provided
+        by the user during bundling.
+      * Ends with a line: `---`
+
+   3.3. File Entry
+
+      Each File Entry represents one original file or one chunk of an
+      original file.
+
+      3.3.1. File Metadata Line
+
+         * Format: `### FILE <N>: <relative_path>[(Chunk <C>/<T>)] | <key1>=<value1>; <key2>=<value2>; ... ###`
+         * `<N>`: Sequential file number in the bundle.
+         * `<relative_path>`: The path of the original file, relative to
+           the Bundler's root directory. Uses POSIX-style forward slashes.
+         * `(Chunk <C>/<T>)`: Optional. Indicates this entry is chunk `C`
+           of `T` total chunks for the original file.
+         * Pipe `|`: Separates the path/chunk info from key-value metadata.
+         * Key-value pairs: Semicolon-separated. See Section 6 for details.
+           Common keys include `size`, `tokens`, `op` (operation status),
+           `cs` (checksum), `chunk_tokens`.
+         * Ends with `###`.
+
+      3.3.2. Content Delimiters (BOF/EOF)
+
+         * `<<< BOF <<<`: Marks the beginning of the file/chunk content.
+           Always on its own line following the Metadata Line.
+         * `>>> EOF >>>`: Marks the end of the file/chunk content. Always
+           on its own line following the content.
+
+      3.3.3. File Content
+
+         * The raw textual content of the original file or chunk.
+         * Stored between the BOF and EOF markers.
+         * The bundler attempts to read files as UTF-8. If that fails, it
+           may attempt a latin-1 fallback. Null bytes (`\x00`) are
+           typically stripped from the content before inclusion.
+         * The bundler ensures content is followed by at least one newline
+           before the `>>> EOF >>>` marker, unless the file is empty.
+           For empty files, the line after `<<< BOF <<<` is empty, followed
+           by `>>> EOF >>>`.
+
+   3.4. Bundle Footer (Summary)
+
+      The Bundle Footer provides a summary of the bundling operation.
+
+      * Starts with a line: `### BUNDLE SUMMARY ###`
+      * Contains multiple lines detailing counts of included files,
+        total size, tokens, exclusions, errors, etc.
+      * Ends with a line: `--- END OF BFILE <bundle_name.txt> ---`
+
+4. Bundling Process
+
+   4.1. Configuration and Initialization
+      The Bundler is initialized with a configuration (e.g., root
+      directory, output file path, exclusion rules, chunking parameters).
+      An `ExclusionManager` is typically set up to handle file filtering.
+
+   4.2. File Collection and Filtering
+      * The Bundler recursively scans the specified root directory (`os.walk`).
+      * Each discovered file and directory is checked against exclusion
+        rules (gitignore, user-defined excludes/includes) by the
+        `ExclusionManager`.
+      * A list of candidate file paths to be included is generated.
+
+   4.3. Metadata Generation
+      For each candidate file:
+      * `FileMetadata` is generated: path, size, modification time,
+        MIME type, checksum (e.g., SHA256), and token count (using
+        `tiktoken`).
+      * The operation status (`op`) is determined (e.g., `+` for included,
+        `D` for duplicate, `E` for empty, `X` for error during processing).
+
+   4.4. Content Reading and Encoding
+      * File content is read, attempting UTF-8 then latin-1.
+      * Null bytes are stripped.
+
+   4.5. Chunking
+      * If chunking is enabled and a file's token count exceeds the
+        configured `chunk_size`:
+         1. The file content is tokenized (e.g., `cl100k_base`).
+         2. Tokens are divided into chunks of `chunk_size` tokens, with
+            a specified `chunk_overlap` of tokens between consecutive chunks.
+         3. Each chunk is treated as a separate File Entry for writing to
+            the bundle, with appropriate `(Chunk C/T)` and `chunk_tokens`
+            metadata.
+         4. The original file's metadata (`op`, `size`, `tokens`, `cs`)
+            is preserved in each chunk's metadata line for context.
+
+   4.6. Writing the Bundle
+      1. The Bundle Header is written to the output stream/file.
+      2. For each selected file (or its chunks):
+         a. The File Metadata Line is formatted and written.
+         b. The BOF marker is written.
+         c. The file/chunk content is written.
+         d. The EOF marker is written.
+         e. A blank line is typically written after each File Entry for
+            readability.
+      3. The Bundle Footer (Summary) is generated and written.
+
+5. Unbundling Process
+
+   5.1. Configuration and Initialization
+      The Unbundler is initialized with the path to the bundle file and
+      an optional output directory. Flags like `force_overwrite` or
+      `list_only` are processed.
+
+   5.2. Bundle Parsing
+      The Unbundler reads the input bundle file, typically line by line
+      or by searching for key markers.
+
+      5.2.1. Identifying File Entries
+         * The parser looks for File Metadata Lines (`### FILE ...`).
+         * Upon finding a metadata line, it parses the relative path,
+           chunk information (if any), and other metadata fields.
+         * It then expects a BOF marker, followed by content, and an EOF
+           marker.
+
+      5.2.2. Extracting Metadata and Content
+         * Metadata key-value pairs are parsed from the Metadata Line.
+         * All lines between BOF and EOF markers are collected as the
+           content for that File Entry.
+
+      5.2.3. Grouping Chunks
+         * File Entries are grouped by their original relative path.
+         * If chunks are present, they are ordered by their chunk number.
+
+   5.3. File Reconstruction
+      For each unique relative file path found in the bundle:
+
+      5.3.1. Directory Creation
+         * The Unbundler determines the full target path by combining the
+           output directory and the file's relative path.
+         * Parent directories for the target file are created if they do
+           not exist (e.g., `Path.mkdir(parents=True, exist_ok=True)`).
+
+      5.3.2. Writing File Content
+         * If the file was not chunked, its extracted content is written to
+           the target path.
+         * If `list_only` is active, the action is logged instead of performed.
+         * If `force_overwrite` is false and the file exists, the Unbundler
+           may skip the file or report an error.
+
+      5.3.3. Chunk Reassembly
+         * If chunks were identified for a file:
+            1. The content from each chunk is concatenated in the correct
+               order (sorted by chunk number).
+            2. The combined content is written to the target file.
+
+   5.4. Post-Extraction (Verification - Optional)
+      * Optionally, if checksums are present in metadata, the Unbundler
+        could re-calculate checksums of extracted files and compare them
+        for verification (not currently a core feature of `bfiles`
+        unbundling but a potential enhancement).
+
+6. Metadata Details
+
+   Metadata fields are semicolon-separated key-value pairs.
+
+   6.1. Standard Fields (for non-chunked entries or the first chunk)
+      * `op`: Operation/Status. Examples:
+         * `+`: Included and content follows.
+         * `D`: Duplicate (content may not follow if it's a pointer to
+                another file's content by checksum).
+         * `E`: Empty file.
+         * `X`: Error processing this file (content might be missing or
+                incomplete).
+         * `C`: Chunked (indicates this is part of a chunked file, full
+                content is split across entries).
+      * `size`: Size of the original file in bytes (e.g., `1024B`).
+      * `tokens`: Estimated token count of the original full file content
+        (e.g., `250`).
+      * `cs`: Checksum of the original full file content. Format:
+        `<algo>:<hex_digest>` (e.g., `sha256:abcdef123...`).
+      * `mime`: Guessed MIME type (e.g., `text/plain`).
+      * `enc`: Detected encoding if different from default (e.g., `latin-1`).
+      * `mod`: Last modified timestamp in ISO8601 format.
+
+   6.2. Chunk-Specific Fields (present in metadata for chunks)
+      * `chunk_tokens`: Token count of THIS specific chunk's content.
+        (The `tokens` field still refers to the original full file's tokens).
+      * The `(Chunk C/T)` part in the main metadata line is also key.
+
+   6.3. Extensibility
+      New key-value pairs can be added to the metadata string in the
+      future. Parsers should ideally ignore unknown key-value pairs to
+      maintain forward compatibility.
+
+7. Error Handling
+
+   7.1. Bundling Errors
+      * File I/O errors (read permissions, file not found during read).
+      * Encoding errors if a file cannot be decoded even with fallbacks.
+      * Errors during checksum calculation or tokenization.
+      * Errors writing the output bundle file.
+      These are typically logged, and problematic files might be marked with
+      `op=X` or skipped.
+
+   7.2. Unbundling Errors
+      * Input bundle file not found or unreadable.
+      * Malformed bundle structure (e.g., missing EOF, mismatched BOF/EOF).
+      * File I/O errors during output file/directory creation (write
+        permissions, disk full).
+      * Checksum mismatches if verification is implemented.
+      Robust unbundlers should attempt to recover as much as possible or
+      provide detailed error messages.
+
+8. Security Considerations
+
+   * Path Traversal: The Unbundler MUST sanitize and validate relative
+     paths extracted from bundle metadata. Paths should be confined to
+     the specified output directory. Relative paths containing `..`
+     components that would escape the output directory must be rejected
+     or normalized safely.
+   * Resource Exhaustion: Very large files or a huge number of files in a
+     bundle could lead to resource exhaustion during unbundling if not
+     handled carefully (e.g., memory for content, disk space).
+     The `list_only` mode can help preview before extraction.
+   * Malicious Content: As with any archive format, bundles can contain
+     files with malicious content. Unbundling does not execute files,
+     but users should be cautious with extracted content.
+   * Symbolic Links: The current bundler does not by default follow
+     symlinks when collecting files for bundling (controlled by a flag).
+     If symlinks were to be represented in a bundle and reconstructed,
+     care would be needed to avoid creating symlinks that point to
+     sensitive locations.
+
+9. IANA Considerations
+
+   This document does not request any IANA actions. A custom file
+   extension like `.bfiles` or `.bfbundle` might be used by convention,
+   but no official media type registration is sought at this time.
+
+10. Acknowledgements
+
+    This format and utility were developed to simplify the process of
+    packaging text-based project files for various development and AI
+    model interaction tasks.
+
+11. References
+
+    [UTF-8] Yergeau, F., "UTF-8, a transformation format of ISO 10646",
+            STD 63, RFC 3629, November 2003.
+
+    [tiktoken] OpenAI. tiktoken library. (Reference to the specific
+               tokenization library used for token counts).
+
+This RFC-style document provides a detailed architecture and specification for the bfiles bundling and unbundling functionality. It covers the file format, processes, metadata, and other relevant considerations.

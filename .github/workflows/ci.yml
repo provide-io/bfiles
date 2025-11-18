@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  UV_VERSION: "0.7.8"
+
+jobs:
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e .
+          uv sync --group dev
+
+      - name: Check formatting
+        run: |
+          source .venv/bin/activate
+          ruff format --check src/ tests/
+
+      - name: Lint
+        run: |
+          source .venv/bin/activate
+          ruff check src/ tests/
+
+      - name: Type check
+        run: |
+          source .venv/bin/activate
+          mypy src/
+
+  test:
+    name: Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11"]
+        # TODO: Add these versions when ready
+        # python-version: ["3.11", "3.12", "3.13", "3.14"]
+        # TODO: Enable Windows when ready
+        # include:
+        #   - os: windows-latest
+        #     python-version: "3.11"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install dependencies (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          uv venv
+          uv pip install -e .
+          uv sync --group dev
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          uv venv
+          uv pip install -e .
+          uv sync --group dev
+        shell: bash
+
+      - name: Run tests (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          source .venv/bin/activate
+          pytest tests/ \
+            --cov=bfiles \
+            --cov-report=xml \
+            --cov-report=term \
+            --cov-fail-under=80 \
+            -n auto \
+            -v
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          source .venv/bin/activate
+          pytest tests/ \
+            --cov=bfiles \
+            --cov-report=xml \
+            --cov-report=term \
+            --cov-fail-under=80 \
+            -n auto \
+            -v
+        shell: bash
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Build
+        run: uv build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/

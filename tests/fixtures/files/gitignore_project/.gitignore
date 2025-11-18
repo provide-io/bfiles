@@ -1,0 +1,4 @@
+*.log
+ignored_by_parent/
+# config.ini # Changed to test *.ini
+*.ini
