@@ -37,7 +37,8 @@ def test_display_summary_table_hides_excluded(
     monkeypatch.setattr("bfiles.output.RICH_AVAILABLE", False)
     display_summary_table(sample_metadata, output_config_hide)
     captured = capsys.readouterr()
-    assert "PLAIN TEXT PATH ENTERED" in captured.out
+    # Check that the table was generated (contains table structure elements)
+    assert "Bfiles Bundle Content Summary" in captured.out
     assert "file1.py" in captured.out
     assert "excluded.log" not in captured.out
 
