@@ -124,9 +124,7 @@ class Bundler:
                     meta = self._create_exclusion_metadata(file_path, "excluded")
                     all_metadata.append(meta)
                 if self.progress_reporter:
-                    self.progress_reporter.file_progress(
-                        file_path, "excluded", root_dir=self.config.root_dir
-                    )
+                    self.progress_reporter.file_progress(file_path, "excluded", root_dir=self.config.root_dir)
                 continue
 
             if self.config.max_files and included_count >= self.config.max_files:
@@ -153,9 +151,7 @@ class Bundler:
                 meta = self._create_exclusion_metadata(file_path, "error")
                 all_metadata.append(meta)
                 if self.progress_reporter:
-                    self.progress_reporter.file_progress(
-                        file_path, "error", root_dir=self.config.root_dir
-                    )
+                    self.progress_reporter.file_progress(file_path, "error", root_dir=self.config.root_dir)
                 continue
 
             all_metadata.append(metadata)
@@ -165,18 +161,14 @@ class Bundler:
                 formatted = self.metadata_writer.format_metadata(0, metadata, self.config.root_dir)
                 buffer.write(formatted + "\n\n")
                 if self.progress_reporter:
-                    self.progress_reporter.file_progress(
-                        file_path, "error", root_dir=self.config.root_dir
-                    )
+                    self.progress_reporter.file_progress(file_path, "error", root_dir=self.config.root_dir)
                 continue
 
             if metadata.operation == "empty":
                 empty_files += 1
                 self._write_empty_file(buffer, metadata)
                 if self.progress_reporter:
-                    self.progress_reporter.file_progress(
-                        file_path, "empty", root_dir=self.config.root_dir
-                    )
+                    self.progress_reporter.file_progress(file_path, "empty", root_dir=self.config.root_dir)
                 continue
 
             if metadata.checksum and metadata.checksum in file_hash_map:
@@ -187,9 +179,7 @@ class Bundler:
                 formatted = self.metadata_writer.format_metadata(0, metadata, self.config.root_dir)
                 buffer.write(formatted + "\n\n")
                 if self.progress_reporter:
-                    self.progress_reporter.file_progress(
-                        file_path, "duplicate", root_dir=self.config.root_dir
-                    )
+                    self.progress_reporter.file_progress(file_path, "duplicate", root_dir=self.config.root_dir)
                 continue
 
             if metadata.operation == "included":
@@ -303,8 +293,7 @@ class Bundler:
         gitignore = "yes" if self.config.use_gitignore else "no"
         followlinks = "yes" if self.config.follow_symlinks else "no"
         stream.write(
-            f"Config: hash={self.config.hash_algorithm}, "
-            f"gitignore={gitignore}, followlinks={followlinks}\n"
+            f"Config: hash={self.config.hash_algorithm}, gitignore={gitignore}, followlinks={followlinks}\n"
         )
 
         if self.config.header_comment:
@@ -402,9 +391,7 @@ class Bundler:
         for chunk_data in chunks:
             chunk_metadata = self._create_chunk_metadata(metadata, chunk_data, encoder)
 
-            formatted = self.metadata_writer.format_metadata(
-                file_num, chunk_metadata, self.config.root_dir
-            )
+            formatted = self.metadata_writer.format_metadata(file_num, chunk_metadata, self.config.root_dir)
             buffer.write(formatted + "\n")
             buffer.write("<<< BOF <<<\n")
 

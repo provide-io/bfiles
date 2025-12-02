@@ -30,9 +30,7 @@ def test_truncate_path_short():
     assert truncate_path(Path("a/b/c_sync.txt"), max_len=20) == "a/b/c_sync.txt"
 
 
-def test_display_summary_table_hides_excluded(
-    capsys, sample_metadata, output_config_hide, monkeypatch
-):
+def test_display_summary_table_hides_excluded(capsys, sample_metadata, output_config_hide, monkeypatch):
     """Plain-text summary hides excluded files when flag is false."""
     monkeypatch.setattr("bfiles.output.RICH_AVAILABLE", False)
     display_summary_table(sample_metadata, output_config_hide)
@@ -44,9 +42,7 @@ def test_display_summary_table_hides_excluded(
 
 
 @pytest.mark.xfail(
-    reason=(
-        "Known capsys/stdout capture issue when show_excluded=True; other tests capture correctly."
-    )
+    reason=("Known capsys/stdout capture issue when show_excluded=True; other tests capture correctly.")
 )
 def test_display_summary_table_shows_excluded(
     sample_metadata, output_config_show, monkeypatch
@@ -126,9 +122,7 @@ def test_truncate_path_long():
 
 def test_truncate_path_very_long_part():
     p = Path("a/b/c/d/this_is_an_extremely_long_filename_that_exceeds_limits_sync.txt")
-    expected = (
-        "a/b/c/d/this_is_an...eds_limits_sync.txt"  # From the latest test failure's "actual" output
-    )
+    expected = "a/b/c/d/this_is_an...eds_limits_sync.txt"  # From the latest test failure's "actual" output
     assert truncate_path(p, max_len=40) == expected
 
 

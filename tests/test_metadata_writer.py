@@ -24,9 +24,7 @@ def test_format_metadata_included(metadata_writer: MetadataWriter, writer_config
         checksum="a1b2c3d4e5f6a7b8sync",
         operation="included",
     )
-    line = metadata_writer.format_metadata(
-        file_num=5, metadata=meta, root_dir=writer_config.root_dir
-    )
+    line = metadata_writer.format_metadata(file_num=5, metadata=meta, root_dir=writer_config.root_dir)
 
     assert line.startswith("### FILE 5: src/module_sync.py |")
     assert "checksum=a1b2c3d4e5f6..." in line
@@ -50,9 +48,7 @@ def test_format_metadata_duplicate(metadata_writer: MetadataWriter, writer_confi
         operation="duplicate",
         original=p_orig,
     )
-    line = metadata_writer.format_metadata(
-        file_num=0, metadata=meta, root_dir=writer_config.root_dir
-    )
+    line = metadata_writer.format_metadata(file_num=0, metadata=meta, root_dir=writer_config.root_dir)
 
     assert line.startswith("### FILE 0: subdir/duplicate_sync.txt |")
     assert "checksum=fedcba987654..." in line
@@ -67,9 +63,7 @@ def test_format_metadata_empty(metadata_writer: MetadataWriter, writer_config: B
     now = datetime.datetime(2024, 5, 2, 10, 32, 0, tzinfo=datetime.UTC)
     p = (writer_config.root_dir / "empty_sync").resolve()
     meta = FileMetadata(path=p, size=0, modified=now, operation="empty")
-    line = metadata_writer.format_metadata(
-        file_num=0, metadata=meta, root_dir=writer_config.root_dir
-    )
+    line = metadata_writer.format_metadata(file_num=0, metadata=meta, root_dir=writer_config.root_dir)
 
     assert line.startswith("### FILE 0: empty_sync |")
     assert "checksum=" not in line
@@ -83,9 +77,7 @@ def test_format_metadata_excluded(metadata_writer: MetadataWriter, writer_config
     now = datetime.datetime(2024, 5, 2, 10, 33, 0, tzinfo=datetime.UTC)
     p = (writer_config.root_dir / ".git/config_sync").resolve()
     meta = FileMetadata(path=p, size=123, modified=now, operation="excluded")
-    line = metadata_writer.format_metadata(
-        file_num=0, metadata=meta, root_dir=writer_config.root_dir
-    )
+    line = metadata_writer.format_metadata(file_num=0, metadata=meta, root_dir=writer_config.root_dir)
 
     assert line.startswith("### FILE 0: .git/config_sync |")
     assert f"modified={now.isoformat(timespec='seconds')}" in line

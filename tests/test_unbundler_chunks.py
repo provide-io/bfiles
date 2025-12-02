@@ -45,10 +45,7 @@ CCCCCCCCCCDDDDDDDDDD
     assert unbundler.extract() is True
     reassembled_file = output_dir / "data.txt"
     assert reassembled_file.exists()
-    assert (
-        reassembled_file.read_text(encoding="utf-8")
-        == "AAAAAAAAAABBBBBBBBBB\nCCCCCCCCCC\nDDDDDDDDDD\n"
-    )
+    assert reassembled_file.read_text(encoding="utf-8") == "AAAAAAAAAABBBBBBBBBB\nCCCCCCCCCC\nDDDDDDDDDD\n"
 
 
 def test_unbundler_chunk_overlap_mismatch(tmp_path: Path, content_bundle_overlap_mismatch_str: str):

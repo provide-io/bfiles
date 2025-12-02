@@ -48,10 +48,7 @@ def content_dummy_bundle_valid_str() -> str:
             "",
             ">>> EOF >>>",
             "",
-            (
-                "### FILE 4: chunked_file.dat (Chunk 1/2) | size=30B; op=C; cs=xyz...; "
-                "chunk_tokens=10 ###"
-            ),
+            ("### FILE 4: chunked_file.dat (Chunk 1/2) | size=30B; op=C; cs=xyz...; chunk_tokens=10 ###"),
             "<<< BOF <<<",
             "Part one of data.",
             ">>> EOF >>>",

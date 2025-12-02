@@ -47,9 +47,7 @@ def test_filemetadata_from_path_empty_file(default_config_no_output: BfilesConfi
     assert meta.operation == "empty"
 
 
-def test_filemetadata_from_path_symlink_not_followed(
-    default_config_no_output: BfilesConfig, tmp_path: Path
-):
+def test_filemetadata_from_path_symlink_not_followed(default_config_no_output: BfilesConfig, tmp_path: Path):
     config = default_config_no_output
     config.root_dir = tmp_path
     config.follow_symlinks = False  # Explicitly set for clarity
@@ -72,9 +70,7 @@ def test_filemetadata_from_path_symlink_not_followed(
     assert meta.operation == "included"  # Target is included
 
 
-def test_filemetadata_from_path_symlink_followed(
-    default_config_no_output: BfilesConfig, tmp_path: Path
-):
+def test_filemetadata_from_path_symlink_followed(default_config_no_output: BfilesConfig, tmp_path: Path):
     config = default_config_no_output
     config.root_dir = tmp_path
     config.follow_symlinks = True  # Enable following
@@ -93,9 +89,7 @@ def test_filemetadata_from_path_symlink_followed(
     assert meta.operation == "included"
 
 
-def test_filemetadata_from_path_file_not_found(
-    default_config_no_output: BfilesConfig, tmp_path: Path
-):
+def test_filemetadata_from_path_file_not_found(default_config_no_output: BfilesConfig, tmp_path: Path):
     config = default_config_no_output
     config.root_dir = tmp_path
     non_existent_file = tmp_path / "ghost.txt"

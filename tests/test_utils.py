@@ -92,10 +92,7 @@ def test_get_mime_and_subtype_sync(
     elif (
         filename == "unknown_mime.xyz" and actual_mime is None and expected_mime is not None
     ):  # pragma: no cover
-        message = (
-            "System did not provide expected MIME type for .xyz: "
-            f"expected {expected_mime}, got None"
-        )
+        message = f"System did not provide expected MIME type for .xyz: expected {expected_mime}, got None"
         pytest.fail(message)
     assert actual_mime == expected_mime
     assert actual_subtype == expected_subtype
@@ -107,9 +104,7 @@ def test_get_mime_type_non_existent_file_sync(tmp_path: Path):
     assert get_file_subtype(non_existent_py) == "x-python"
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32", reason="Encoding tests might behave differently on Windows"
-)
+@pytest.mark.skipif(sys.platform == "win32", reason="Encoding tests might behave differently on Windows")
 def test_is_utf8_file_valid_utf8_sync(tmp_path: Path):
     valid_utf8_content = "This is valid UTF-8 text with éàçü sync."
     test_file = tmp_path / "valid_utf8_sync.txt"
@@ -117,9 +112,7 @@ def test_is_utf8_file_valid_utf8_sync(tmp_path: Path):
     assert is_utf8_file(test_file) is True
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32", reason="Encoding tests might behave differently on Windows"
-)
+@pytest.mark.skipif(sys.platform == "win32", reason="Encoding tests might behave differently on Windows")
 def test_is_utf8_file_invalid_utf8_sync(tmp_path: Path):
     invalid_utf8_bytes = b"This contains invalid sync \xff bytes."
     test_file = tmp_path / "invalid_utf8_sync.txt"

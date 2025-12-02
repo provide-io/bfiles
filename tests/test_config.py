@@ -123,9 +123,7 @@ def test_config_root_dir_is_file(tmp_path: Path):
 def test_config_post_init_adds_output_file_exclusion(tmp_path: Path):
     output_path = tmp_path / "specific_bundle_sync.txt"
     initial_excludes = ["*.log", ".git/"]
-    config = BfilesConfig(
-        root_dir=tmp_path, output_file=output_path, exclude_patterns=list(initial_excludes)
-    )
+    config = BfilesConfig(root_dir=tmp_path, output_file=output_path, exclude_patterns=list(initial_excludes))
     expected_final_excludes = set(initial_excludes)
     expected_final_excludes.add(str(output_path.resolve()))
     assert set(config.exclude_patterns) == expected_final_excludes
@@ -135,12 +133,9 @@ def test_config_post_init_skips_add_if_literal_match(tmp_path: Path):
     output_path = tmp_path / "bundle_v2_sync.txt"
     resolved_output_str = str(output_path.resolve())
     initial_excludes = ["*.log", resolved_output_str]
-    config = BfilesConfig(
-        root_dir=tmp_path, output_file=output_path, exclude_patterns=list(initial_excludes)
-    )
+    config = BfilesConfig(root_dir=tmp_path, output_file=output_path, exclude_patterns=list(initial_excludes))
     assert resolved_output_str in config.exclude_patterns or any(
-        isinstance(p, str)
-        and Path(p).resolve(strict=False) == Path(resolved_output_str).resolve(strict=False)
+        isinstance(p, str) and Path(p).resolve(strict=False) == Path(resolved_output_str).resolve(strict=False)
         for p in config.exclude_patterns
     )
 

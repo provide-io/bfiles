@@ -32,9 +32,7 @@ def cli_project_dir(tmp_path: Path) -> Path:
     dest_dir = tmp_path / "sample_proj_cli"  # Keep consistent with copy dest name
 
     # Copy the base structure
-    shutil.copytree(
-        source_dir, dest_dir, dirs_exist_ok=True, symlinks=True
-    )  # Copy symlinks if possible
+    shutil.copytree(source_dir, dest_dir, dirs_exist_ok=True, symlinks=True)  # Copy symlinks if possible
 
     # Explicitly create symlink within the *destination* directory
     link_path = dest_dir / "link_to_readme"

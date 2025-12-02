@@ -125,21 +125,17 @@ def test_bundle_files_duplicates(
         r"\| original=duplicate.txt \| size=16 \| tokens=\d+ \| type=plain ###"
     )
     error_msg = (
-        "Pattern not found for file1.txt duplicate:\n"
-        f"{file1_duplicate_pattern}\nIn content:\n{content}"
+        f"Pattern not found for file1.txt duplicate:\n{file1_duplicate_pattern}\nIn content:\n{content}"
     )
     assert re.search(file1_duplicate_pattern, content), error_msg
     assert "### FILE 3: file2.py" in content  # Adjusted file number
-    assert (
-        "### FILE 4: link_target/inside_link_target.txt" in content
-    )  # Corrected expected file for FILE 4
+    assert "### FILE 4: link_target/inside_link_target.txt" in content  # Corrected expected file for FILE 4
     subdir_duplicate_pattern = (
         r"### FILE 0: subdir/duplicate.txt.*?\| op=d "
         r"\| original=duplicate.txt.*?\| size=16 \| tokens=\d+ \| type=plain ###"
     )
     subdir_error = (
-        "Pattern not found for subdir/duplicate.txt:\n"
-        f"{subdir_duplicate_pattern}\nIn content:\n{content}"
+        f"Pattern not found for subdir/duplicate.txt:\n{subdir_duplicate_pattern}\nIn content:\n{content}"
     )
     assert re.search(subdir_duplicate_pattern, content), subdir_error
 
@@ -158,9 +154,7 @@ def test_bundle_files_empty(
     assert basic_config.output_file is not None
     content = basic_config.output_file.read_text()
     assert re.search(r"### FILE 0: empty.txt.*\| op=0", content)
-    empty_section_match = re.search(
-        r"### FILE 0: empty.txt.*?<<< BOF <<<(.*?)>>> EOF >>>", content, re.DOTALL
-    )
+    empty_section_match = re.search(r"### FILE 0: empty.txt.*?<<< BOF <<<(.*?)>>> EOF >>>", content, re.DOTALL)
     assert empty_section_match is not None
     content_between = empty_section_match.group(1).strip()
     assert content_between == ""
@@ -375,16 +369,12 @@ def test_chunking_with_overlap(chunking_config_base, metadata_writer_default, ti
     # Overlap is first 2 tokens of chunk 2: C2 tokens = all_original_tokens[8:18]
     # Overlapping part of C2 is all_original_tokens[8:10]
     all_original_tokens = tiktoken_encoder.encode(content_str)
-    overlap_tokens_for_c2 = all_original_tokens[
-        8:10
-    ]  # These are the first 2 tokens of C2 that were end of C1
+    overlap_tokens_for_c2 = all_original_tokens[8:10]  # These are the first 2 tokens of C2 that were end of C1
     expected_c2_overlap_str = tiktoken_encoder.decode(overlap_tokens_for_c2)
     expected_c2_overlap_bytes = len(expected_c2_overlap_str.encode("utf-8"))
 
     if len(lines) > 5:
-        assert re.search(rf"\| overlap_prev={expected_c2_overlap_bytes}", lines[5]), (
-            f"C2 metadata: {lines[5]}"
-        )
+        assert re.search(rf"\| overlap_prev={expected_c2_overlap_bytes}", lines[5]), f"C2 metadata: {lines[5]}"
         assert re.search(r"\| tokens=10", lines[5])
     else:  # pragma: no cover
         pytest.fail("Not enough lines in output for chunk 2 metadata")
@@ -420,9 +410,7 @@ def test_chunking_with_overlap(chunking_config_base, metadata_writer_default, ti
 
     assert chunk1_tokens == all_original_tokens[0:10]
     assert chunk2_tokens == all_original_tokens[8:18]  # Overlap: starts at 10-2=8, ends at 8+10=18
-    assert (
-        chunk3_tokens == all_original_tokens[16:25]
-    )  # Overlap: starts at 18-2=16, ends at 16+9=25
+    assert chunk3_tokens == all_original_tokens[16:25]  # Overlap: starts at 18-2=16, ends at 16+9=25
 
 
 @pytest.mark.skip(reason="Needs refactoring to test through Bundler class API after refactoring")

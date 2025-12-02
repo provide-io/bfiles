@@ -51,9 +51,7 @@ def test_custom_output_path(runner: CliRunner, cli_project_dir: Path, tmp_path: 
     assert "### BUNDLE SUMMARY ###" in target.read_text()
 
 
-def test_include_exclude_without_gitignore(
-    runner: CliRunner, cli_project_dir: Path, tmp_path: Path
-) -> None:
+def test_include_exclude_without_gitignore(runner: CliRunner, cli_project_dir: Path, tmp_path: Path) -> None:
     target = tmp_path / "filtered_bundle.bf"
     _run_cli(
         runner,
@@ -147,9 +145,7 @@ def test_chunking_creates_chunk_entries(runner: CliRunner, tmp_path: Path) -> No
     assert "(Chunk 2/" in bundle_content
 
 
-def test_exclusion_report_file_created(
-    runner: CliRunner, cli_project_dir: Path, tmp_path: Path
-) -> None:
+def test_exclusion_report_file_created(runner: CliRunner, cli_project_dir: Path, tmp_path: Path) -> None:
     report_path = tmp_path / "exclusions.txt"
     _run_cli(
         runner,

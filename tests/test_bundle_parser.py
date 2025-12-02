@@ -56,17 +56,13 @@ def test_bundle_parser_valid_bundle(tmp_path: Path, content_dummy_bundle_valid_s
     assert entry5.is_chunk
     assert entry5.chunk_num == 2
     assert entry5.total_chunks == 2
-    assert (
-        entry5.content == " data.Part two of data.\n"
-    )  # Parser reads the raw content from fixture
+    assert entry5.content == " data.Part two of data.\n"  # Parser reads the raw content from fixture
 
     assert parser.footer_lines is not None
     assert "--- END OF BFILE dummy_bundle.txt ---" in parser.footer_lines[-1]
 
 
-def test_bundle_parser_malformed_missing_eof(
-    tmp_path: Path, content_malformed_bundle_missing_eof_str: str
-):
+def test_bundle_parser_malformed_missing_eof(tmp_path: Path, content_malformed_bundle_missing_eof_str: str):
     """Test that parser correctly handles bundles with missing EOF marker."""
     bundle_file_path = tmp_path / "malformed_missing_eof.bfiles"
     bundle_file_path.write_text(content_malformed_bundle_missing_eof_str, encoding="utf-8")
@@ -75,9 +71,7 @@ def test_bundle_parser_malformed_missing_eof(
     assert parser.parse() is False
 
 
-def test_bundle_parser_malformed_bad_meta(
-    tmp_path: Path, content_malformed_bundle_bad_meta_str: str
-):
+def test_bundle_parser_malformed_bad_meta(tmp_path: Path, content_malformed_bundle_bad_meta_str: str):
     """Test that parser correctly handles bundles with malformed metadata."""
     bundle_file_path = tmp_path / "malformed_meta.bfiles"
     bundle_file_path.write_text(content_malformed_bundle_bad_meta_str, encoding="utf-8")

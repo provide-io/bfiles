@@ -46,9 +46,7 @@ def bundle_files(
     reader = FileReader(config)
     chunker = FileChunker(config)
     metadata_writer = MetadataWriter(config)
-    bundler = Bundler(
-        config, reader, chunker, metadata_writer, exclusion_manager, progress_reporter=progress
-    )
+    bundler = Bundler(config, reader, chunker, metadata_writer, exclusion_manager, progress_reporter=progress)
 
     # Collect files
     progress.operation_start("Collecting files")
@@ -151,9 +149,7 @@ def list_potential_files(  # noqa: C901
     elapsed = time.monotonic() - start_time
     logger.info("list.complete", duration_seconds=elapsed)
 
-    log_list_summary(
-        len(included_files), processed_files, exclusion_manager, cli_context=cli_context
-    )
+    log_list_summary(len(included_files), processed_files, exclusion_manager, cli_context=cli_context)
 
     # Output file list as JSON or text
     if cli_context and cli_context.json_output:

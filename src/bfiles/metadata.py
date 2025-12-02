@@ -35,23 +35,17 @@ class FileMetadata:
 
     path: Path = attrs.field(validator=attrs.validators.instance_of(Path))
     size: int = attrs.field(validator=attrs.validators.instance_of(int))
-    modified: datetime.datetime = attrs.field(
-        validator=attrs.validators.instance_of(datetime.datetime)
-    )
+    modified: datetime.datetime = attrs.field(validator=attrs.validators.instance_of(datetime.datetime))
     file_type: str | None = attrs.field(default=None)
     checksum: str | None = attrs.field(default=None)
-    operation: str = attrs.field(
-        default="included", validator=attrs.validators.in_(_VALID_OPERATIONS)
-    )
+    operation: str = attrs.field(default="included", validator=attrs.validators.in_(_VALID_OPERATIONS))
     original: Path | None = attrs.field(
         default=None, validator=attrs.validators.optional(attrs.validators.instance_of(Path))
     )
     token_count: int | None = attrs.field(default=None, kw_only=True)
     chunk_num: int | None = attrs.field(default=None, kw_only=True)
     total_chunks: int | None = attrs.field(default=None, kw_only=True)
-    overlap_bytes_prev: int | None = attrs.field(
-        default=None, kw_only=True
-    )  # For chunks after the first
+    overlap_bytes_prev: int | None = attrs.field(default=None, kw_only=True)  # For chunks after the first
 
     @classmethod
     def from_path(cls, file_path: Path, config: BfilesConfig) -> "FileMetadata":
@@ -98,19 +92,14 @@ class FileMetadata:
                         chunk = fb.read(1024)  # Read first 1KB
                         if b"\x00" in chunk:
                             logger.debug(
-                                f"Null byte found in {resolved_path}, "
-                                "skipping token count (likely binary)."
+                                f"Null byte found in {resolved_path}, skipping token count (likely binary)."
                             )
                             token_count = None
                         else:
                             # Proceed with text reading for tokenization
-                            file_content = resolved_path.read_text(
-                                encoding=config.encoding, errors="replace"
-                            )
+                            file_content = resolved_path.read_text(encoding=config.encoding, errors="replace")
                             try:
-                                enc = tiktoken.get_encoding(
-                                    "cl100k_base"
-                                )  # Or config.tokenizer_encoding
+                                enc = tiktoken.get_encoding("cl100k_base")  # Or config.tokenizer_encoding
                                 token_count = len(enc.encode(file_content))
                             except UnicodeDecodeError:  # pragma: no cover
                                 # Should be caught by errors='replace'
@@ -125,8 +114,7 @@ class FileMetadata:
                                 token_count = None
                 except OSError as e_os:  # pragma: no cover
                     logger.warning(
-                        f"OS error reading {resolved_path} for token counting: "
-                        f"{e_os}. Token count N/A."
+                        f"OS error reading {resolved_path} for token counting: {e_os}. Token count N/A."
                     )
                     token_count = None
                 except Exception as e_gen:  # pragma: no cover
@@ -205,18 +193,12 @@ class BundleSummary:
 
     @property
     def total_excluded_count(self) -> int:
-        return (
-            self.excluded_by_config_pattern
-            + self.excluded_by_gitignore
-            + self.excluded_by_default_pattern
-        )
+        return self.excluded_by_config_pattern + self.excluded_by_gitignore + self.excluded_by_default_pattern
 
     @property
     def total_bundle_size_bytes(self) -> int:
         return (
-            self.bundle_header_size_bytes
-            + self.total_content_bytes_in_bundle
-            + self.bundle_footer_size_bytes
+            self.bundle_header_size_bytes + self.total_content_bytes_in_bundle + self.bundle_footer_size_bytes
         )
 
 

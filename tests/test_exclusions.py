@@ -33,10 +33,7 @@ def test_gitignore_nested_exclusions(gitignore_project_dir: Path, tmp_path: Path
     assert manager.is_excluded(gitignore_project_dir / "sub" / "temp.tmp") == "gitignore"
     assert manager.is_excluded(gitignore_project_dir / "sub" / "sub_data.log") == "gitignore"
     assert manager.is_excluded(gitignore_project_dir / "sub" / "subsub" / "final.py") is None
-    assert (
-        manager.is_excluded(gitignore_project_dir / "sub" / "subsub" / "deep_config.ini")
-        == "gitignore"
-    )
+    assert manager.is_excluded(gitignore_project_dir / "sub" / "subsub" / "deep_config.ini") == "gitignore"
 
 
 def test_gitignore_disabled(gitignore_project_dir: Path, tmp_path: Path):
@@ -106,9 +103,7 @@ def test_exclude_precedence_string_regex_glob(include_exclude_project_dir: Path,
 
 
 @pytest.mark.xfail(
-    reason=(
-        "Platform-specific logging makes capturing the unreadable .gitignore warning unreliable."
-    )
+    reason=("Platform-specific logging makes capturing the unreadable .gitignore warning unreliable.")
 )
 def test_unreadable_gitignore_file(tmp_path: Path, caplog):  # Use standard caplog
     """Ensure unreadable .gitignore files emit a warning without crashing.

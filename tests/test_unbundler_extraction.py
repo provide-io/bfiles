@@ -51,17 +51,13 @@ def test_unbundler_list_only(tmp_path: Path, content_dummy_bundle_valid_str: str
     assert "[+] file1.txt" in captured.out
     assert "[+] path/to/file2.py" in captured.out
     assert "[0] empty.txt" in captured.out
-    assert (
-        "[C] chunked_file.dat (2 chunks)" in captured.out
-    )  # op might be C for chunked file itself
+    assert "[C] chunked_file.dat (2 chunks)" in captured.out  # op might be C for chunked file itself
 
 
 def test_unbundler_dry_run(tmp_path: Path, content_dummy_bundle_valid_str: str, capsys):
     bundle_file_path = tmp_path / "dummy_valid_dryrun.bfiles"
     bundle_file_path.write_text(content_dummy_bundle_valid_str, encoding="utf-8")
-    output_dir = (
-        tmp_path / "output_dryrun"
-    )  # Should not be created, but files "would be" placed here
+    output_dir = tmp_path / "output_dryrun"  # Should not be created, but files "would be" placed here
     unbundler = Unbundler(bundle_file_path, output_dir_base=output_dir, dry_run=True)
 
     assert unbundler.extract() is True
@@ -85,9 +81,7 @@ def test_unbundler_force_overwrite(tmp_path: Path, content_dummy_bundle_valid_st
     pre_existing_file.write_text("Old content", encoding="utf-8")
 
     # First, run without force (should skip)
-    unbundler_no_force = Unbundler(
-        bundle_file_path, output_dir_base=output_dir, force_overwrite=False
-    )
+    unbundler_no_force = Unbundler(bundle_file_path, output_dir_base=output_dir, force_overwrite=False)
     assert unbundler_no_force.extract() is True
     assert pre_existing_file.read_text(encoding="utf-8") == "Old content"  # Not overwritten
 
@@ -97,9 +91,7 @@ def test_unbundler_force_overwrite(tmp_path: Path, content_dummy_bundle_valid_st
     assert pre_existing_file.read_text(encoding="utf-8") == "Hello World!\n"  # Overwritten
 
 
-def test_unbundler_default_output_dir(
-    tmp_path: Path, content_dummy_bundle_valid_str: str, monkeypatch
-):
+def test_unbundler_default_output_dir(tmp_path: Path, content_dummy_bundle_valid_str: str, monkeypatch):
     # To test default output dir creation, we need to ensure the Unbundler's
     # _output_dir_base is effectively None or CWD initially.
     # The CLI passes None if -o is not used.
