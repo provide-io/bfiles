@@ -93,7 +93,8 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
-addopts = "-m 'not integration and not slow' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist load"
+addopts = "-m 'not integration and not slow' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
+# Parallel execution: pytest -n <workers> (range: 2-16, recommend: CPU cores or 8, max: 16 to avoid xdist hang)
 markers = [
     "unit: fast unit tests",
     "integration: integration tests requiring setup",
