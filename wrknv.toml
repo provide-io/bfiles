@@ -90,3 +90,6 @@ quality = [
     "lint",
     "typecheck",
 ]
+
+[tasks.security]
+_default = "bandit -r src/ -c pyproject.toml"
