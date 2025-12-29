@@ -42,7 +42,6 @@ def cli() -> None:
 
     and unbundle them back.
     """
-    pass
 
 
 @cli.command(name="bundle", context_settings={"help_option_names": ["-h", "--help"]})

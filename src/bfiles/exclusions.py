@@ -94,7 +94,6 @@ class ExclusionManager:
                         continue
                     except re.error:
                         logger.debug(f"Pattern '{pattern}' is not a valid regex, trying as glob/literal.")
-                        pass
 
                 if is_glob:
                     self._glob_patterns.append(pattern)
