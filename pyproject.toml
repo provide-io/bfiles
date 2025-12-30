@@ -1,3 +1,9 @@
+#
+# bfiles/pyproject.toml
+#
+# Bundle multiple files into a single text artifact with metadata
+#
+
 [build-system]
 requires = ["setuptools>=75.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -15,6 +21,7 @@ authors = [
 maintainers = [
     { name = "provide.io", email = "code@provide.io" },
 ]
+keywords = ["bundling", "files", "text", "artifact", "metadata", "llm", "context"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -23,6 +30,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Typing :: Typed",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
