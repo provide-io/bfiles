@@ -14,7 +14,7 @@ from provide.foundation.config.base import BaseConfig, field
 
 from bfiles.errors import ConfigurationError, InvalidPathError
 
-ExcludePattern: TypeAlias = str | re.Pattern
+ExcludePattern: TypeAlias = str | re.Pattern[str]
 IncludePattern: TypeAlias = str
 
 DEFAULT_ENCODING = "utf-8"

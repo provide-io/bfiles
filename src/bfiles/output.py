@@ -12,7 +12,7 @@ import sys
 import time
 
 # Conditionally import TypeAlias for older Python versions if needed
-from typing import TypeAlias  # type: ignore[no-redef]
+from typing import TypeAlias
 
 # Avoid circular import, only import for type hint if needed
 from provide.foundation import logger
@@ -203,7 +203,7 @@ def _prepare_display_row_data(  # noqa: C901
     config: BfilesConfig,
     file_counter: int,
     force_plain_text: bool,
-) -> tuple[str, str, str, str, str, str, str, str, str]:
+) -> tuple[str, str, str, str, str, str, str, str, str, str, str]:
     """Prepares a tuple of strings for a single row in the summary table."""
     op_code_rich_prefix = ""
     op_code_plain = meta.get_operation_code()

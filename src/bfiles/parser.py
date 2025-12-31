@@ -166,7 +166,7 @@ class BundleParser:
                     generation_datetime=generation_datetime,
                     config_options=config_options,
                     comment=comment,
-                    raw_header_lines=raw_header_lines,
+                    raw_header_lines=tuple(raw_header_lines),
                 )
                 logger.debug("parse.header.success")
                 return True

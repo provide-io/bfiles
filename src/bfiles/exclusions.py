@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import re
 from re import Pattern
-from typing import Any, Literal, TypeAlias  # type: ignore[assignment]
+from typing import Any, Literal, TypeAlias
 
 try:
     import pathspec
@@ -21,7 +21,7 @@ try:
     except ImportError:  # pragma: no cover
         PathSpec: TypeAlias = Any  # type: ignore
 except ImportError:  # pragma: no cover
-    pathspec = None
+    pathspec = None  # type: ignore[assignment]
     PathSpec: TypeAlias = Any  # type: ignore
 
 from provide.foundation import logger
@@ -154,7 +154,7 @@ class ExclusionManager:
                         ]
                         if lines:
                             spec: PathSpec = pathspec.PathSpec.from_lines(
-                                pathspec.patterns.GitWildMatchPattern, lines
+                                pathspec.patterns.GitWildMatchPattern, lines  # type: ignore[attr-defined]
                             )
                             if spec.patterns:  # Check if spec was successfully created with patterns
                                 self._gitignore_specs[gitignore_dir] = spec

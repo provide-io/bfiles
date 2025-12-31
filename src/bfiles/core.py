@@ -94,7 +94,7 @@ def bundle_files(
     if config.show_excluded:
         logger.info("bundle.show_excluded.start")
         try:
-            exclusion_manager.display_exclusions()  # type: ignore[no-untyped-call]
+            exclusion_manager.display_exclusions()
         except AttributeError:
             logger.error("bundle.exclusions.display_error", error="method not found")
         except Exception as e:
@@ -177,7 +177,7 @@ def list_potential_files(  # noqa: C901
     if config.show_excluded:
         logger.info("list.show_excluded.start")
         try:
-            exclusion_manager.display_exclusions()  # type: ignore[no-untyped-call]
+            exclusion_manager.display_exclusions()
         except AttributeError:
             logger.error("list.exclusions.display_error", error="method not found")
         except Exception as e:
