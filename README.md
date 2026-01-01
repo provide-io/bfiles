@@ -203,8 +203,6 @@ mypy src
 - `docs/bfiles.1` - Man page
 - `docs/specs.txt` - Bundle format specification
 - `docs/MATURITY_REPORT.md` - Code maturity assessment
-- `docs/PLAN.md` - Development plan
-- `docs/TODO.md` - Todo list
 
 ## Dependencies
 
