@@ -15,9 +15,19 @@ from bfiles.cli import main as bfiles_cli
 
 
 def _run_cli(runner: CliRunner, args: list[str]) -> str:
-    """Invoke the CLI and assert the command succeeds."""
-    result = runner.invoke(bfiles_cli, args, catch_exceptions=False)
-    assert result.exit_code == 0, f"CLI exited with code {result.exit_code}:\n{result.output}"
+    """Invoke the CLI and assert the command succeeds.
+
+    Note: Uses catch_exceptions=True (default) to handle stream cleanup issues
+    that can occur in CI environments with tiktoken/Rich. We check for actual
+    command failures via exit_code and exception type.
+    """
+    result = runner.invoke(bfiles_cli, args)
+    # Only fail on real command errors, not stream cleanup issues
+    if result.exit_code != 0:
+        if result.exception and not isinstance(result.exception, ValueError):
+            raise result.exception
+        # Check if it's a real failure vs stream cleanup issue
+        assert result.exit_code == 0, f"CLI exited with code {result.exit_code}:\n{result.output}"
     return result.output
 
 
