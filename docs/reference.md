@@ -409,8 +409,8 @@ Key classes and functions:
 ## 7. Troubleshooting
 
 *   **Permission Errors**: Ensure `bfiles` has read access to the root directory and its contents (for bundling) and write access to the output directory (for bundling and unbundling).
-*   **`pathspec` Missing for `.gitignore`**: If `.gitignore` processing is enabled (default for `bundle` command) and `pathspec` is not installed, `bfiles bundle` will exit with an error. Install with `uv add bfiles[gitignore]` or `pip install pathspec`. Alternatively, use `--no-gitignore`.
-*   **`tiktoken` Missing for Chunking**: If `--chunk-size` is used for bundling and `tiktoken` is not installed, an error will occur. Install with `uv pip install bfiles` (as it's a core dependency) or `uv pip install tiktoken`.
+*   **`pathspec` Missing for `.gitignore`**: If `.gitignore` processing is enabled (default for `bundle` command) and `pathspec` is not installed, `bfiles bundle` will exit with an error. Install with `uv add bfiles[gitignore]` or `uv add pathspec`. Alternatively, use `--no-gitignore`.
+*   **`tiktoken` Missing for Chunking**: If `--chunk-size` is used for bundling and `tiktoken` is not installed, an error will occur. Install with `uv add bfiles` (as it's a core dependency) or `uv add tiktoken`.
 *   **Encoding Issues**: If files are not `utf-8` (or the specified `--encoding` for bundling), the bundler attempts a `latin-1` fallback. If that also fails, the file might be skipped or cause an error. Content with null bytes might have them stripped. Bundles are typically UTF-8.
 *   **Log Levels**: Use `--log-level debug` for detailed diagnostic output for both `bundle` and `unbundle` commands if you encounter unexpected behavior.
 *   **Overlap Mismatches during Unbundling**: If the unbundler logs warnings about "Overlap mismatch", it means the content of the chunks does not perfectly align as expected. This could indicate a corrupted bundle or a bug in the bundler/unbundler's overlap calculation for specific edge cases. The unbundler will attempt to append the full chunk content as a fallback.
