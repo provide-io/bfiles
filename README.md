@@ -1,17 +1,25 @@
-# bfiles
+# Bfiles
 
-A modular file bundling utility for LLM processing - bundle multiple files into a single text archive and unbundle them back.
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![uv](https://img.shields.io/badge/uv-package_manager-FF6B35.svg)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![CI](https://github.com/provide-io/bfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/bfiles/actions)
 
-## Features
+**Modular file bundling utility for LLM processing**
 
-- 📦 **Bundle files** into human-readable text archives
-- 🔄 **Unbundle archives** back to original directory structure
-- 🎯 Respect `.gitignore` patterns
-- 🔍 Custom include/exclude patterns (glob, regex, literal)
-- 🔐 File integrity verification (checksums)
-- 🧩 **File chunking** for large files (token-based)
-- 📊 Rich terminal output with statistics
-- 🚀 LLM-friendly output format
+Bundle multiple files into a single text archive and unbundle them back. Designed for sharing codebases with LLMs while respecting gitignore patterns and providing token-aware chunking.
+
+## ✨ Key Features
+
+- 📦 **Bundle Files** - Create human-readable text archives from directory structures
+- 🔄 **Unbundle Archives** - Restore original directory structure from bundles
+- 🎯 **Gitignore Respect** - Automatically respects `.gitignore` patterns
+- 🔍 **Pattern Filtering** - Custom include/exclude patterns (glob, regex, literal)
+- 🔐 **Integrity Verification** - File checksums for verification
+- 🧩 **Token Chunking** - Split large files for LLM context limits
+- 📊 **Rich Output** - Beautiful terminal output with statistics
+- 🚀 **LLM-Friendly** - Optimized output format for AI processing
 
 ## Quick Start
 
