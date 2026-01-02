@@ -242,4 +242,4 @@ bf unbundle my-bundle.txt
 
 **Note**: The unbundler feature is comprehensive but may have edge cases. Please report any issues you encounter when unbundling files.
 
-Copyright (c) Provide.io LLC.
+Copyright (c) provide.io LLC.
