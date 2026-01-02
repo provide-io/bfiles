@@ -36,7 +36,7 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "provide-foundation[all]",
+    "provide-foundation[all] @ https://github.com/provide-io/provide-foundation/releases/download/v0.3.0/provide_foundation-0.3.0-py3-none-any.whl",
     "pathspec>=0.12.1",
     "rich>=14.0.0",
     "tiktoken>=0.7.0",
