@@ -76,7 +76,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install with dev dependencies
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 ```
 
 ### Run Tests
@@ -115,13 +115,13 @@ Apache License 2.0 - See LICENSE file for details.
 ## Installation
 
 ```bash
-pip install -e .
+uv pip install -e .
 ```
 
 For development:
 
 ```bash
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 ```
 
 ## Command Reference
