@@ -283,7 +283,7 @@ def main(  # noqa: C901
                 perr(f"Error: {e}. 'pathspec' library is required for .gitignore support.")
                 perr("You can disable .gitignore handling with the --no-gitignore flag.")
                 perr("Or install with: pip install bfiles[gitignore]")
-                raise SystemExit(2)
+                raise SystemExit(2) from None
             else:
                 raise
 
@@ -312,19 +312,19 @@ def main(  # noqa: C901
     except ImportError as e:  # pragma: no cover
         logger.critical(f"Import error: {e}", exc_info=True)
         perr(f"Error: An import failed - {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     except ValueError as e:  # pragma: no cover
         logger.critical(f"Configuration or Value error: {e}", exc_info=False)
         perr(f"Error: {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     except OSError as e:  # pragma: no cover
         logger.critical(f"File system error: {e}", exc_info=False)
         perr(f"Error: {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     except Exception as e:  # pragma: no cover
         logger.critical(f"An unexpected error occurred: {e}", exc_info=True)
         perr(f"An unexpected error occurred: {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
 
 # Actual unbundle function
@@ -363,11 +363,11 @@ def _unbundle_files(
     except FileNotFoundError:
         logger.critical(f"Error: Bundle file '{bundle_file}' not found.", exc_info=False)
         perr(f"Error: Bundle file '{bundle_file}' not found.")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     except Exception as e:  # pragma: no cover
         logger.critical(f"An unexpected error occurred during unbundling: {e}", exc_info=True)
         perr(f"An unexpected error occurred: {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
 
 @cli.command(name="unbundle", context_settings={"help_option_names": ["-h", "--help"]})
