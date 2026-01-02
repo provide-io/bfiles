@@ -13,18 +13,6 @@ A modular file bundling utility for LLM processing - bundle multiple files into 
 - 📊 Rich terminal output with statistics
 - 🚀 LLM-friendly output format
 
-## Installation
-
-```bash
-pip install -e .
-```
-
-For development:
-
-```bash
-pip install -e ".[dev]"
-```
-
 ## Quick Start
 
 ### Bundle files
@@ -69,6 +57,71 @@ bfiles bundle --chunk-size 4000
 
 # With 100-token overlap between chunks
 bfiles bundle --chunk-size 4000 --chunk-overlap 100
+```
+
+## Documentation
+
+- `docs/reference.md` - Complete reference manual
+- `docs/bfiles.1` - Man page
+- `docs/specs.txt` - Bundle format specification
+- `docs/MATURITY_REPORT.md` - Code maturity assessment
+
+## Development
+
+### Setup
+
+```bash
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install with dev dependencies
+pip install -e ".[dev]"
+```
+
+### Run Tests
+
+```bash
+# All tests
+pytest tests/ -v
+
+# With coverage
+pytest tests/ --cov=src/bfiles --cov-report=term-missing
+
+# Specific test file
+pytest tests/test_unbundler.py -v
+```
+
+### Lint and Format
+
+```bash
+# Check code
+ruff check src tests
+
+# Format code
+ruff format src tests
+
+# Type check
+mypy src
+```
+
+## Contributing
+See [CLAUDE.md](CLAUDE.md) for contribution guidance.
+
+## License
+
+Apache License 2.0 - See LICENSE file for details.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+For development:
+
+```bash
+pip install -e ".[dev]"
 ```
 
 ## Command Reference
@@ -158,52 +211,6 @@ config = BfilesConfig(
 bundle_files(config)
 ```
 
-## Development
-
-### Setup
-
-```bash
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install with dev dependencies
-pip install -e ".[dev]"
-```
-
-### Run Tests
-
-```bash
-# All tests
-pytest tests/ -v
-
-# With coverage
-pytest tests/ --cov=src/bfiles --cov-report=term-missing
-
-# Specific test file
-pytest tests/test_unbundler.py -v
-```
-
-### Lint and Format
-
-```bash
-# Check code
-ruff check src tests
-
-# Format code
-ruff format src tests
-
-# Type check
-mypy src
-```
-
-## Documentation
-
-- `docs/reference.md` - Complete reference manual
-- `docs/bfiles.1` - Man page
-- `docs/specs.txt` - Bundle format specification
-- `docs/MATURITY_REPORT.md` - Code maturity assessment
-
 ## Dependencies
 
 - Python >= 3.10
@@ -213,10 +220,6 @@ mypy src
 - rich >= 14.0.0 - Enhanced terminal output
 - structlog >= 25.3.0 - Structured logging
 - tiktoken >= 0.7.0 - Token counting
-
-## License
-
-Apache License 2.0 - See LICENSE file for details.
 
 ## Project Info
 
