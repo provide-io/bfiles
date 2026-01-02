@@ -77,7 +77,7 @@ This report assesses the maturity of the `bfiles` codebase based on a line-by-li
 
 *   **Configuration of Tokenizer**: The tokenizer (`cl100k_base`) is hardcoded in a few places (e.g., `FileMetadata.from_path`, `_write_file_or_chunks_to_buffer`). Making this configurable via `BfilesConfig` could be beneficial.
 *   **Error Reporting Granularity**: While errors are logged, providing more structured error reports or summaries (especially for a library use case) could be useful.
-*   **Extensibility of Metadata**: The metadata format is fixed. A more extensible system (e.g., plugins for custom metadata) could be considered for future versions if required.
+*   **Extensibility of Metadata**: The metadata format is fixed. A more extensible system (e.g., plugins for custom metadata) could be considered as exploratory work if required.
 *   **Performance**: For very large projects, the performance of `os.walk` and repeated `resolve()` calls might be a bottleneck. This would need profiling to confirm. The current implementation seems reasonably optimized for typical use cases.
 *   **Async Operations**: For I/O bound tasks, `asyncio` could potentially offer performance benefits, but would add complexity. (Likely overkill for current scope).
 *   **Documentation Completeness**: While docstrings are good, comprehensive user documentation (beyond README) detailing all features, exclusion logic nuances, and API usage would enhance maturity. (This is part of the current request).
