@@ -283,7 +283,7 @@ def main(  # noqa: C901
                 perr(f"Error: {e}. 'pathspec' library is required for .gitignore support.")
                 perr("You can disable .gitignore handling with the --no-gitignore flag.")
                 perr("Or install with: pip install bfiles[gitignore]")
-                sys.exit(2)
+                raise SystemExit(2)
             else:
                 raise
 
@@ -295,7 +295,7 @@ def main(  # noqa: C901
             if config.output_file is None:  # pragma: no cover
                 logger.critical("Error: Output file path is required for bundling but was not determined.")
                 perr("Error: Output file path could not be determined.")
-                sys.exit(1)
+                raise SystemExit(1)
 
             logger.info(f"Starting bundling process. Output to: {config.output_file}")
             bundle_files(config=config, exclusion_manager=exclusion_manager_instance, cli_context=cli_context)
@@ -309,24 +309,22 @@ def main(  # noqa: C901
         elif exclusion_report and not exclusion_manager_instance:  # pragma: no cover
             logger.error("Cannot generate exclusion report, ExclusionManager not available.")
 
-        sys.exit(0)
-
     except ImportError as e:  # pragma: no cover
         logger.critical(f"Import error: {e}", exc_info=True)
         perr(f"Error: An import failed - {e}")
-        sys.exit(1)
+        raise SystemExit(1)
     except ValueError as e:  # pragma: no cover
         logger.critical(f"Configuration or Value error: {e}", exc_info=False)
         perr(f"Error: {e}")
-        sys.exit(1)
+        raise SystemExit(1)
     except OSError as e:  # pragma: no cover
         logger.critical(f"File system error: {e}", exc_info=False)
         perr(f"Error: {e}")
-        sys.exit(1)
+        raise SystemExit(1)
     except Exception as e:  # pragma: no cover
         logger.critical(f"An unexpected error occurred: {e}", exc_info=True)
         perr(f"An unexpected error occurred: {e}")
-        sys.exit(1)
+        raise SystemExit(1)
 
 
 # Actual unbundle function
@@ -359,18 +357,17 @@ def _unbundle_files(
         )
         if unbundler_instance.extract():
             logger.info("Unbundling process completed successfully.")
-            sys.exit(0)
         else:
             logger.error("Unbundling process encountered errors.")
-            sys.exit(1)
+            raise SystemExit(1)
     except FileNotFoundError:
         logger.critical(f"Error: Bundle file '{bundle_file}' not found.", exc_info=False)
         perr(f"Error: Bundle file '{bundle_file}' not found.")
-        sys.exit(1)
+        raise SystemExit(1)
     except Exception as e:  # pragma: no cover
         logger.critical(f"An unexpected error occurred during unbundling: {e}", exc_info=True)
         perr(f"An unexpected error occurred: {e}")
-        sys.exit(1)
+        raise SystemExit(1)
 
 
 @cli.command(name="unbundle", context_settings={"help_option_names": ["-h", "--help"]})
