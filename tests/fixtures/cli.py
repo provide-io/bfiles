@@ -14,9 +14,13 @@ FIXTURES_DIR = Path(__file__).parent
 FILES_DIR = FIXTURES_DIR / "files"
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def runner() -> CliRunner:
-    """Provides a Click CliRunner instance."""
+    """Provides a Click CliRunner instance.
+
+    Uses function scope (default) to ensure each test gets a fresh runner.
+    This prevents stream-related issues with pytest-xdist parallel execution.
+    """
     return CliRunner()
 
 
