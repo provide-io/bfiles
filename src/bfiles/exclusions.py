@@ -154,7 +154,8 @@ class ExclusionManager:
                         ]
                         if lines:
                             spec: PathSpec = pathspec.PathSpec.from_lines(
-                                pathspec.patterns.GitWildMatchPattern, lines  # type: ignore[attr-defined]
+                                pathspec.patterns.GitWildMatchPattern,
+                                lines,  # type: ignore[attr-defined]
                             )
                             if spec.patterns:  # Check if spec was successfully created with patterns
                                 self._gitignore_specs[gitignore_dir] = spec
