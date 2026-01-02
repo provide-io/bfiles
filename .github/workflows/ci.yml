@@ -47,7 +47,7 @@ jobs:
           install-extras: 'dev'
 
       - name: Run tests
-        run: uv run pytest tests/ --cov=bfiles --cov-report=xml --cov-report=term --cov-fail-under=0 -n auto -v
+        run: uv run pytest tests/ --cov=bfiles --cov-report=xml --cov-report=term --cov-fail-under=0 -v
 
   build:
     name: Build Package
