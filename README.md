@@ -61,10 +61,10 @@ bfiles bundle --chunk-size 4000 --chunk-overlap 100
 
 ## Documentation
 
-- `docs/reference.md` - Complete reference manual
-- `docs/bfiles.1` - Man page
-- `docs/specs.txt` - Bundle format specification
-- `docs/MATURITY_REPORT.md` - Code maturity assessment
+- [docs/reference.md](https://github.com/provide-io/bfiles/blob/main/docs/reference.md) - Complete reference manual
+- [docs/bfiles.1](https://github.com/provide-io/bfiles/blob/main/docs/bfiles.1) - Man page
+- [docs/specs.txt](https://github.com/provide-io/bfiles/blob/main/docs/specs.txt) - Bundle format specification
+- [docs/MATURITY_REPORT.md](https://github.com/provide-io/bfiles/blob/main/docs/MATURITY_REPORT.md) - Code maturity assessment
 
 ## Development
 
