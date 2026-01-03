@@ -1,4 +1,4 @@
-# 📦📄 Bfiles
+# 🐝🗄️ Bfiles
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -22,6 +22,8 @@ Bundle multiple files into a single text archive and unbundle them back. Designe
 - 🚀 **LLM-Friendly** - Optimized output format for AI processing
 
 ## Quick Start
+
+> **Note**: bfiles is in pre-release (v0.x.x). APIs and features may change before 1.0 release.
 
 ### Bundle files
 
