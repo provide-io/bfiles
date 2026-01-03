@@ -78,42 +78,20 @@ bfiles bundle --chunk-size 4000 --chunk-overlap 100
 
 ## Development
 
-### Setup
+### Quick Start
 
 ```bash
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+# Set up environment
+uv sync
 
-# Install with dev dependencies
-uv pip install -e ".[dev]"
+# Run common tasks
+we test           # Run tests
+we lint           # Check code
+we format         # Format code
+we tasks          # See all available commands
 ```
 
-### Run Tests
-
-```bash
-# All tests
-pytest tests/ -v
-
-# With coverage
-pytest tests/ --cov=src/bfiles --cov-report=term-missing
-
-# Specific test file
-pytest tests/test_unbundler.py -v
-```
-
-### Lint and Format
-
-```bash
-# Check code
-ruff check src tests
-
-# Format code
-ruff format src tests
-
-# Type check
-mypy src
-```
+See [CLAUDE.md](https://github.com/provide-io/bfiles/blob/main/CLAUDE.md) for detailed development instructions and architecture information.
 
 ## Contributing
 See [CLAUDE.md](https://github.com/provide-io/bfiles/blob/main/CLAUDE.md) for contribution guidance.
