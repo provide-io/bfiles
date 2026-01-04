@@ -46,7 +46,7 @@ uv run pytest -m integration
 uv run pytest -m ""
 
 # Or using wrknv
-we test
+we run test
 ```
 
 ### Code Quality
@@ -67,9 +67,9 @@ uv run ruff check --fix src/ tests/
 uv run mypy src/
 
 # Or using wrknv
-we format
-we lint
-we typecheck
+we run format
+we run lint
+we run typecheck
 ```
 
 ### Code Style
