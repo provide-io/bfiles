@@ -71,7 +71,7 @@ This report assesses the maturity of the `bfiles` codebase based on a line-by-li
 *   A `tests/` directory exists with a structure mirroring `src/bfiles/`.
 *   Fixtures are located in `tests/fixtures/`.
 *   Test files like `test_cli.py`, `test_core.py`, etc., suggest unit/integration tests are in place.
-*   (Actual test execution and coverage will be assessed in a later step).
+*   (Actual test execution and coverage are not assessed in this report).
 
 ## 8. Areas for Potential Improvement (Initial Thoughts)
 
