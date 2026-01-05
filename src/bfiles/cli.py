@@ -276,12 +276,12 @@ def main(  # noqa: C901
                 logger.critical(
                     "dependency.pathspec.missing",
                     error=str(e),
-                    resolution=("Install via `pip install bfiles[gitignore]` to enable .gitignore support."),
+                    resolution=("Install via `uv add bfiles[gitignore]` to enable .gitignore support."),
                     exc_info=False,
                 )
                 perr(f"Error: {e}. 'pathspec' library is required for .gitignore support.")
                 perr("You can disable .gitignore handling with the --no-gitignore flag.")
-                perr("Or install with: pip install bfiles[gitignore]")
+                perr("Or install with: uv add bfiles[gitignore]")
                 raise SystemExit(2) from None
             else:
                 raise
