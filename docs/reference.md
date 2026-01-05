@@ -38,7 +38,7 @@
 
 ## 1. Installation
 
-Install `bfiles` using pip:
+Install `bfiles` with uv:
 
 ```bash
 uv add bfiles
