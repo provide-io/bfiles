@@ -55,7 +55,7 @@ Or, for development, clone the repository and install with all development depen
 ```bash
 git clone <repository_url>
 cd bfiles
-uv pip install -e ".[dev,tui,gitignore]"
+uv sync
 ```
 
 ## 2. Commands

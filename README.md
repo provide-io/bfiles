@@ -74,7 +74,6 @@ bfiles bundle --chunk-size 4000 --chunk-overlap 100
 - [docs/reference.md](https://github.com/provide-io/bfiles/blob/main/docs/reference.md) - Complete reference manual
 - [docs/bfiles.1](https://github.com/provide-io/bfiles/blob/main/docs/bfiles.1) - Man page
 - [docs/specs.txt](https://github.com/provide-io/bfiles/blob/main/docs/specs.txt) - Bundle format specification
-- [docs/MATURITY_REPORT.md](https://github.com/provide-io/bfiles/blob/main/docs/MATURITY_REPORT.md) - Code maturity assessment
 
 ## Development
 
@@ -103,13 +102,13 @@ Apache License 2.0 - See LICENSE file for details.
 ## Installation
 
 ```bash
-uv pip install -e .
+uv add bfiles
 ```
 
 For development:
 
 ```bash
-uv pip install -e ".[dev]"
+uv sync
 ```
 
 ## Command Reference
