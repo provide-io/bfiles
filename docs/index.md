@@ -1,7 +1,7 @@
 # bfiles
 
 !!! warning "Pre-release"
-    This documentation covers a pre-release. APIs and features may change, and some documented items are exploratory and may change or be removed.
+    This documentation covers a pre-release. APIs and features may change during the pre-release series.
 
 
 A modular file bundling utility for LLM processing - bundle multiple files into a single text archive and unbundle them back.
