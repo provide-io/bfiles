@@ -201,7 +201,7 @@ bundle_files(config)
 
 ## Dependencies
 
-- Python >= 3.10
+- Python >= 3.11
 - attrs >= 23.1.0 - Configuration and data classes
 - click >= 8.1.7 - CLI framework
 - pathspec >= 0.12.1 - .gitignore pattern matching
