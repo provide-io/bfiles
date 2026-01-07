@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   release:
-    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@v0
+    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@main
     with:
       python-version: '3.11'
       run-tests: true
