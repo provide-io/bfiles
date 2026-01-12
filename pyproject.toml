@@ -1,0 +1,204 @@
+#
+# bfiles/pyproject.toml
+#
+# Bundle multiple files into a single text artifact with metadata
+#
+
+[build-system]
+requires = ["setuptools>=75.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bfiles"
+dynamic = ["version"]
+description = "Bundle multiple files into a single text artifact with metadata."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [
+    { name = "Tim Perkins", email = "code@tim.life" },
+]
+maintainers = [
+    { name = "provide.io", email = "code@provide.io" },
+]
+keywords = ["bundling", "files", "text", "artifact", "metadata", "llm", "context"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "provide-foundation[all]>=0.3.0",
+    "pathspec>=0.12.1",
+    "rich>=14.0.0",
+    "tiktoken>=0.7.0",
+]
+
+[project.urls]
+Homepage = "https://foundry.provide.io/bfiles/"
+Documentation = "https://foundry.provide.io/bfiles/"
+Repository = "https://foundry.provide.io/bfiles/repo"
+Issues = "https://foundry.provide.io/bfiles/issues"
+
+[project.scripts]
+bf = "bfiles.cli:main"
+bfiles = "bfiles.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+
+[tool.ruff]
+line-length = 111
+indent-width = 4
+target-version = "py311"
+exclude = ["tests/fixtures/files/**"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "ANN", "B", "BLE", "C90", "PIE", "PLR", "S", "SIM", "PTH", "RUF"]
+ignore = [
+    "ANN401",   # any-type (too restrictive)
+    "BLE001",   # blind-except (too restrictive for cleanup patterns)
+    "B008",     # function-call-in-default-argument (Click uses this pattern)
+    "E501",     # line-too-long (handled by formatter)
+    "S101",     # assert (valid in tests)
+    "S104",   # binding-to-all-interfaces (intentional for servers)
+    "S108",     # hardcoded-temp-file (/tmp is fine for our use cases)
+    "S310",     # suspicious-url-open-for-protocol (URLs are controlled)
+    "S603",     # subprocess-without-shell-equals-true (trusted input)
+    "S607",     # start-process-with-partial-path (trusted executables)
+    "PLR0911",  # too-many-return-statements (refactor later)
+    "PLR0912",  # too-many-branches (refactor later)
+    "PLR0913",  # too-many-arguments (common in config classes)
+    "PLR0915",  # too-many-statements (refactor later)
+    "PLR2004",  # magic-value-comparison (too noisy)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bfiles", "tests"]
+force-sort-within-sections = true
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "B017", "C901", "E402", "PLR0124", "PLR1714", "S102", "S105", "S106", "S110", "S307", "S311", "S324", "S602", "SIM105", "SIM108", "SIM117"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*", "*_test"]
+addopts = "-m 'not integration and not slow' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
+# Parallel execution: pytest -n <workers> (range: 2-16, recommend: CPU cores or 8, max: 16 to avoid xdist hang)
+markers = [
+    "unit: fast unit tests",
+    "integration: integration tests requiring setup",
+    "slow: tests taking >1s",
+    "fast: tests taking <100ms",
+    "benchmark: performance/timing sensitive tests",
+    "flaky: tests known to be intermittently failing",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:cannot collect test class 'Test.*' because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:cannot collect test class .* because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:coroutine .* was never awaited:RuntimeWarning",
+    "ignore:Module already imported so cannot be rewritten:pytest.PytestAssertRewriteWarning",
+]
+norecursedirs = [
+    ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",
+    ".venv", "venv", "workenv",
+    "htmlcov", "docs/_build",
+    ".hypothesis",
+]
+
+[tool.coverage.run]
+source = ["src/bfiles"]
+branch = true
+parallel = true
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "def __str__",
+    "@(abc\\.)?abstractmethod",
+    "pass",
+    "logger\\.(debug|info|warning|error|exception|critical|trace)\\(",
+    "print\\(",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.mypy]
+mypy_path = "src"
+strict = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+python_version = "3.11"
+warn_unused_ignores = true
+warn_unused_configs = true
+follow_imports = "normal"
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = [
+    "pathspec.*",
+    "tiktoken.*",
+]
+ignore_missing_imports = true
+
+[dependency-groups]
+dev = [
+    "provide-testkit[standard,advanced-testing,build]",
+]
+docs = [
+    "provide-testkit[docs]",
+]
+# disallow_any_generics = true # Can be very strict
+# warn_redundant_casts = true
+# warn_unused_ignores = true
+# strict_equality = true
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests", "workenv"]

@@ -1,0 +1,70 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+workenv/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+
+# Type checking / linting
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# MkDocs
+/site
+docs/.shared-theme/
+
+# Terraform state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Bfiles specific
+*.bf.txt
+*.bfile*
+bfile[s]-*
+bf-*
+code.sh
+
+# Provide tooling
+.provide/foundry/
+
+# Project specific
+.note
+vendor
+certs
+visuals
+*.zip
+.claude

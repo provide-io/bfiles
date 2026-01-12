@@ -1,0 +1,5 @@
+# CLI Project .gitignore
+*.tmp
+build/
+.env
+data/results.log

@@ -1,0 +1,205 @@
+.\" Man page for bfiles
+.\" Contact jules@example.com to correct errors or typos.
+.TH bfiles 1 "June 2025" "bfiles __VERSION__" "User Commands"
+.SH NAME
+bfiles \- a utility to bundle multiple files into a single text archive
+.SH SYNOPSIS
+.B bfiles bundle
+[\fIBUNDLE_OPTIONS\fR]
+.br
+.B bfiles unbundle
+\fIBUNDLE_FILE\fR [\fIUNBUNDLE_OPTIONS\fR]
+.SH DESCRIPTION
+.B bfiles
+is a command-line tool that provides two main subcommands: \fBbundle\fR and \fBunbundle\fR.
+The \fBbundle\fR command scans a directory, collects specified files, and bundles them into a single text-based archive file. This bundle includes the content of each file along with its metadata (path, size, hash, etc.). It supports inclusion/exclusion rules, .gitignore processing, duplicate detection, and file chunking.
+The \fBunbundle\fR command extracts files from a bfiles bundle archive back into a directory structure.
+.SH COMMANDS
+.TP
+.B bundle
+Bundles files into an archive. See BUNDLE OPTIONS below.
+.TP
+.B unbundle
+Extracts files from an archive. See UNBUNDLE OPTIONS below.
+.SH GLOBAL OPTIONS
+.TP
+.B \-\-version
+Show the version of bfiles and exit.
+.TP
+.BR \-h ", " \-\-help
+Show the help message and exit.
+.SH BUNDLE OPTIONS
+These options apply to the \fBbundle\fR command.
+.TP
+.BR \-d ", " \-\-root\-dir \fIDIRECTORY\fR
+Root directory to scan for files. Default: \fB.\fR
+.TP
+.BR \-o ", " \-\-output \fIFILEPATH\fR
+Output file path for the bundle. Default: \fBbfiles-YYYYMMDD-HHMMSS.txt\fR in the root directory.
+.TP
+.BR \-i ", " \-\-include \fIPATTERN\fR
+Inclusion pattern (glob/literal). Overrides excludes except .gitignore. Can be used multiple times.
+.TP
+.BR \-e ", " \-\-exclude \fIPATTERN\fR
+Exclusion pattern (regex/glob/literal). A pattern ending with \fB/\fR implies a directory. Can be used multiple times.
+.TP
+.B \-\-show\-excluded
+Show excluded files and directories (including those from .gitignore) in a summary table after processing.
+.TP
+.BR \-\-exclusion\-report \fIFILEPATH\fR
+Generate a text report of all excluded items (including those from .gitignore) to the specified file.
+.TP
+.BR \-l ", " \-\-log\-level \fILEVEL\fR
+Set the logging level. Choices: \fBdebug\fR, \fBinfo\fR, \fBwarn\fR, \fBwarning\fR, \fBerror\fR, \fBcritical\fR. Default: \fBwarning\fR.
+.TP
+.B \-\-encoding \fIENCODING_STRING\fR
+Encoding to use when reading files. Default: \fButf-8\fR.
+.TP
+.BR \-\-hash\-algo \fIALGORITHM\fR
+Hashing algorithm for file checksums. Choices: \fBsha256\fR, \fBsha1\fR, \fBmd5\fR, \fBsha512\fR. Default: \fBsha256\fR.
+.TP
+.B \-\-no\-gitignore
+Disable automatic loading and processing of .gitignore files.
+.TP
+.B \-\-follow\-symlinks
+Follow symbolic links during directory scan.
+.TP
+.BR \-m ", " \-\-max\-files \fINUMBER\fR
+Maximum number of files to include in the bundle. No limit by default.
+.TP
+.B \-\-list\-files\-only
+List files that would be included (after all exclusions) and then exit without creating a bundle.
+.TP
+.BR \-\-add\-comment \fISTRING\fR
+Add a custom comment line to the bundle header.
+.TP
+.BR \-\-chunk\-size \fITOKENS\fR
+Maximum number of tokens per chunk. If not specified, chunking is disabled. Requires the 'tiktoken' library. Default: \fBNone\fR.
+.TP
+.BR \-\-chunk\-overlap \fITOKENS\fR
+Number of tokens to overlap between consecutive chunks. Default: \fB0\fR.
+.SH UNBUNDLE OPTIONS
+These options apply to the \fBunbundle\fR command.
+.TP
+.B \fIBUNDLE_FILE\fR
+The bfiles bundle file to extract. (Positional Argument)
+.TP
+.BR \-\-output\-dir ", " \-o \fIDIRECTORY\fR
+Directory to extract files into. Default: a new directory named after the bundle file, created in the same location as the bundle file.
+.TP
+.BR \-\-force ", " \-f
+Overwrite existing files in the output directory without prompting.
+.TP
+.B \-\-list\-only ", " \-\-ls
+List the contents of the bundle without extracting any files.
+.TP
+.BR \-\-dry\-run ", " \-n
+Show what files would be extracted and where, but do not actually write any files.
+.TP
+.BR \-l ", " \-\-log\-level \fILEVEL\fR
+Set the logging level for the unbundle operation. Choices: \fBdebug\fR, \fBinfo\fR, \fBwarn\fR, \fBwarning\fR, \fBerror\fR, \fBcritical\fR. Default: \fBwarning\fR.
+.SH BUNDLE FORMAT
+The output bundle is a text file with the following structure:
+.IP "1. Optional Preamble (2 lines)"
+.IP "2. Bundle Header"
+Details configuration used for bundling (hash algorithm, gitignore usage, etc.) and any user-provided comment. Starts with \fB--- START OF BFILE <bundle_name.txt> ---\fR and ends with \fB---\fR.
+.IP "3. File Entries"
+Each file entry consists of:
+.RS
+.IP "a. Metadata Line"
+Starts with \fB### FILE <N>: <relative_path>[(Chunk <C>/<T>)] | <key1>=<value1>; ... ###\fR. Includes file number, relative path, optional chunk information, size, checksum, operation code, etc.
+.IP "b. Content Delimiters"
+\fB<<< BOF <<<\fR on its own line before content.
+.br
+\fB>>> EOF >>>\fR on its own line after content.
+.IP "c. File Content"
+The actual content of the file or chunk.
+.RE
+.IP "4. Bundle Footer (Summary)"
+Starts with \fB### BUNDLE SUMMARY ###\fR and provides statistics about the bundling process (files included, total size, errors, etc.). Ends with \fB--- END OF BFILE <bundle_name.txt> ---\fR.
+.SH EXCLUSION RULES
+File and directory exclusion follows this precedence:
+.IP "1. .gitignore"
+If \fB\-\-no\-gitignore\fR is NOT specified, rules from .gitignore files are applied first and always exclude matching paths.
+.IP "2. \-\-include patterns"
+Patterns provided via \fB\-\-include\fR will explicitly include matching files, overriding subsequent \fB\-\-exclude\fR rules. However, .gitignore exclusions still take precedence over includes.
+.IP "3. \-\-exclude patterns"
+User-defined and default exclusion patterns (string literals, regex, globs) are applied.
+.P
+Default exclude patterns target common temporary files, version control directories (e.g., .git), virtual environments, build artifacts, and log files.
+.SH EXAMPLES
+.TP
+.B Basic bundling
+Bundle all files in the current directory and its subdirectories:
+.RS
+.EX
+bfiles -o my_bundle.txt
+.EE
+.RE
+.TP
+.B Using include and exclude
+Bundle Python files, excluding test files from a 'tests' directory:
+.RS
+.EX
+bfiles -i "*.py" -e "tests/" -o python_src.bfiles
+.EE
+.RE
+.TP
+.B List files without bundling
+See which files would be included with specific .gitignore handling:
+.RS
+.EX
+bfiles --list-files-only --no-gitignore
+.EE
+.RE
+.TP
+.B Chunking large files
+Bundle files, chunking any file that exceeds 500 tokens, with an overlap of 50 tokens:
+.RS
+.EX
+bfiles --chunk-size 500 --chunk-overlap 50 -o chunked_bundle.txt
+.EE
+.RE
+.TP
+.B Extracting a bundle
+Extract 'my_bundle.txt' into a directory named 'my_bundle_unbundled':
+.RS
+.EX
+bfiles unbundle my_bundle.txt
+.EE
+.RE
+.TP
+Extract 'archive.bfiles' into a specific directory 'extracted_stuff/', forcing overwrite:
+.RS
+.EX
+bfiles unbundle archive.bfiles -o extracted_stuff/ -f
+.EE
+.RE
+.TP
+List contents of 'data_package.txt':
+.RS
+.EX
+bfiles unbundle data_package.txt --list-only
+.EE
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+Successful completion.
+.TP
+.B 1
+An unexpected error occurred (e.g., configuration error, file system error).
+.TP
+.B 2
+A required dependency is missing (e.g., 'pathspec' when .gitignore processing is enabled).
+.SH SEE ALSO
+.BR grep (1),
+.BR find (1),
+.BR tar (1)
+.SH BUGS
+Report bugs to the project's issue tracker or the contact email in this man page.
+.SH AUTHOR
+The bfiles utility and this man page were created by Jules.
+.SH COPYRIGHT
+This man page is distributed under the same terms as bfiles itself.
+Refer to the LICENSE file in the bfiles distribution.
