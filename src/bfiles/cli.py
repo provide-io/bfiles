@@ -262,7 +262,8 @@ def main(  # noqa: C901
             sanitize_unsafe=sanitize_unsafe,
             show_progress=progress,
         )
-        logger.debug(f"Effective configuration: {config}")
+        if logger.is_debug_enabled():
+            logger.debug(f"Effective configuration: {config}")
 
         try:
             exclusion_manager_instance = ExclusionManager(config)
