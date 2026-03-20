@@ -95,23 +95,27 @@ def get_mime_type(file_path: Path) -> str | None:
     mime_type, _ = mimetypes.guess_type(file_path.name, strict=False)
 
     if mime_type:
-        logger.debug(f"Guessed MIME type for {file_path.name} via mimetypes: {mime_type}")
+        if logger.is_debug_enabled():
+            logger.debug(f"Guessed MIME type for {file_path.name} via mimetypes: {mime_type}")
         return mime_type
 
     # Fallback based on file extension (lowercase)
     ext_fallback = _MIME_TYPE_FALLBACKS.get(file_path.suffix.lower())
     if ext_fallback:
-        logger.debug(f"Guessed MIME type for {file_path.name} via fallback: {ext_fallback}")
+        if logger.is_debug_enabled():
+            logger.debug(f"Guessed MIME type for {file_path.name} via fallback: {ext_fallback}")
         return ext_fallback
 
     # Fallback based on filename (lowercase) if no extension match
     name_fallback = _MIME_TYPE_FALLBACKS.get(file_path.name.lower())
     if name_fallback:  # pragma: no cover
-        logger.debug(f"Guessed MIME type for {file_path.name} via filename fallback: {name_fallback}")
+        if logger.is_debug_enabled():
+            logger.debug(f"Guessed MIME type for {file_path.name} via filename fallback: {name_fallback}")
         return name_fallback
 
     # If no type found after checks
-    logger.debug(f"Could not determine MIME type for {file_path.name}.")
+    if logger.is_debug_enabled():
+        logger.debug(f"Could not determine MIME type for {file_path.name}.")
     return None
 
 
@@ -158,7 +162,8 @@ def is_utf8_file(file_path: Path, sample_size: int = 1024) -> bool:
             sample = f.read(sample_size)
             sample.decode("utf-8", errors="strict")  # Try decoding with strict errors
     except UnicodeDecodeError:  # pragma: no cover
-        logger.debug(f"File start does not decode as strict UTF-8: {file_path}")
+        if logger.is_debug_enabled():
+            logger.debug(f"File start does not decode as strict UTF-8: {file_path}")
         return False
     except FileNotFoundError:  # pragma: no cover
         logger.error(f"File not found during UTF-8 check: {file_path}")
