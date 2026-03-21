@@ -4,6 +4,7 @@
 Creates a synthetic bundle in memory and parses it repeatedly to stress
 the regex matching, line iteration, and content extraction loop.
 """
+
 from __future__ import annotations
 
 import os
@@ -29,8 +30,7 @@ def _generate_bundle(num_files: int) -> str:
         "containing multiple delimited files with metadata.\n"
     )
     lines.append(
-        "Parse and analyze the content between '<<< BOF <<<' and '>>> EOF >>>' "
-        "for each '### FILE...' entry.\n"
+        "Parse and analyze the content between '<<< BOF <<<' and '>>> EOF >>>' for each '### FILE...' entry.\n"
     )
     lines.append("")
     lines.append("--- START OF BFILE stress_test.bf.txt ---")

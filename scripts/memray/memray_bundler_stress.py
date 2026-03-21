@@ -4,6 +4,7 @@
 Exercises FileMetadata.from_path (stat + hash + tiktoken), metadata
 formatting, and the StringIO buffer write loop that dominates bundling.
 """
+
 from __future__ import annotations
 
 import os
