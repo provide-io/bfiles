@@ -209,7 +209,7 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "pathspec", specifier = ">=0.12.1" },
-    { name = "provide-foundation", extras = ["all"], specifier = ">=0.3.0" },
+    { name = "provide-foundation", extras = ["all"], specifier = ">=0.3.21,<0.4" },
     { name = "rich", specifier = ">=14.0.0" },
     { name = "tiktoken", specifier = ">=0.7.0" },
 ]
@@ -2020,16 +2020,16 @@ wheels = [
 
 [[package]]
 name = "provide-foundation"
-version = "0.3.0"
+version = "0.3.21"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "structlog" },
     { name = "tomli-w" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/cb/7f40121c2c792ee37fcf51ba542900b68406948c12ed3d91692c2565328d/provide_foundation-0.3.0.tar.gz", hash = "sha256:bc29bd8a00309671feb06d84b9bb6623b16703bcde48efb8cac41782b2c222fb", size = 410755, upload-time = "2026-01-01T23:49:44.571Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/78/0b8bdfed16c2d03eff9bf27f4a4f42d7d027a30ac3bd285152b59f83da7a/provide_foundation-0.3.21.tar.gz", hash = "sha256:4f1c7b243ae3291bfa0492dba32ade8b30387852add1be9a83f82e72572d717f", size = 417231, upload-time = "2026-03-21T23:25:04.438Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/75/3e349fe4e45f1c1ac3d5847f11fbab6f3e36199ff3f7e7878e0f5cc31487/provide_foundation-0.3.0-py3-none-any.whl", hash = "sha256:00f3f27fbd4dc0b3df575a5063609966f711d0f4eb57ae28af84c8cc9bad3310", size = 608359, upload-time = "2026-01-01T23:49:46.05Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/6a/4a0ab8711d55fc1d4134cb0d138c6e2eb2b07569c5d8a7ac1e2be435c166/provide_foundation-0.3.21-py3-none-any.whl", hash = "sha256:50ad183bfc7e33d100d37b579796c95dcfca1ca0bd552daa8ef640d4d440e089", size = 613949, upload-time = "2026-03-21T23:25:05.713Z" },
 ]
 
 [package.optional-dependencies]
