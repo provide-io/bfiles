@@ -61,6 +61,12 @@ code.sh
 # Provide tooling
 .provide/foundry/
 
+# Memray output
+memray-output/
+
+# act local CI
+.actrc
+
 # Project specific
 .note
 vendor

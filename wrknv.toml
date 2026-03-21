@@ -92,5 +92,9 @@ quality = [
     "typecheck",
 ]
 
+[tasks.memray]
+_default = "pytest tests/memray -m memray --no-header -q"
+update = "MEMRAY_UPDATE_BASELINE=1 pytest tests/memray -m memray --no-header -q"
+
 [tasks.security]
 _default = "bandit -r src/ -c pyproject.toml"

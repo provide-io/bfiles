@@ -124,6 +124,7 @@ markers = [
     "fast: tests taking <100ms",
     "benchmark: performance/timing sensitive tests",
     "flaky: tests known to be intermittently failing",
+    "memray: memory profiling stress tests",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
