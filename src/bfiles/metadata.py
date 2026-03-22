@@ -7,11 +7,22 @@
 import datetime
 from pathlib import Path
 
+from typing import Any
+
 import attrs
 from provide.foundation import logger
-import tiktoken
 
 from bfiles.config import BfilesConfig
+
+_tiktoken_enc: Any = None
+
+
+def _get_tiktoken_encoder():
+    global _tiktoken_enc
+    if _tiktoken_enc is None:
+        import tiktoken
+        _tiktoken_enc = tiktoken.get_encoding("cl100k_base")
+    return _tiktoken_enc
 from bfiles.utils import compute_file_hash, get_file_subtype
 
 # Define valid operation choices for validation
@@ -99,7 +110,7 @@ class FileMetadata:
                             # Proceed with text reading for tokenization
                             file_content = resolved_path.read_text(encoding=config.encoding, errors="replace")
                             try:
-                                enc = tiktoken.get_encoding("cl100k_base")  # Or config.tokenizer_encoding
+                                enc = _get_tiktoken_encoder()
                                 token_count = len(enc.encode(file_content))
                             except UnicodeDecodeError:  # pragma: no cover
                                 # Should be caught by errors='replace'

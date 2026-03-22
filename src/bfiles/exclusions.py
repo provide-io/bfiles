@@ -76,14 +76,12 @@ class ExclusionManager:
         self._compiled_regexes = []
         self._glob_patterns = []
         self._string_literals = []
-        if logger.is_debug_enabled():
-            logger.debug(f"Compiling {len(self._raw_exclude_patterns)} raw exclude patterns.")
+        logger.debug(f"Compiling {len(self._raw_exclude_patterns)} raw exclude patterns.")
 
         for pattern in self._raw_exclude_patterns:
             if isinstance(pattern, re.Pattern):
                 self._compiled_regexes.append(pattern)
-                if logger.is_debug_enabled():
-                    logger.debug(f"Loaded pre-compiled regex pattern: {pattern.pattern}")
+                logger.debug(f"Loaded pre-compiled regex pattern: {pattern.pattern}")
             elif isinstance(pattern, str):
                 is_glob = "*" in pattern or "?" in pattern or "[" in pattern
                 is_regex_candidate = not is_glob
@@ -92,21 +90,17 @@ class ExclusionManager:
                     try:
                         compiled_regex = re.compile(pattern)
                         self._compiled_regexes.append(compiled_regex)
-                        if logger.is_debug_enabled():
-                            logger.debug(f"Compiled string as regex pattern: {pattern}")
+                        logger.debug(f"Compiled string as regex pattern: {pattern}")
                         continue
                     except re.error:
-                        if logger.is_debug_enabled():
-                            logger.debug(f"Pattern '{pattern}' is not a valid regex, trying as glob/literal.")
+                        logger.debug(f"Pattern '{pattern}' is not a valid regex, trying as glob/literal.")
 
                 if is_glob:
                     self._glob_patterns.append(pattern)
-                    if logger.is_debug_enabled():
-                        logger.debug(f"Identified glob pattern: {pattern}")
+                    logger.debug(f"Identified glob pattern: {pattern}")
                 elif Path(pattern).is_absolute():
                     self._string_literals.append(str(Path(pattern).resolve(strict=False)))
-                    if logger.is_debug_enabled():
-                        logger.debug(f"Treating absolute path pattern as exact literal: {pattern}")
+                    logger.debug(f"Treating absolute path pattern as exact literal: {pattern}")
                 elif not is_glob:
                     try:
                         resolved_path = (self.root_dir / pattern).resolve(strict=False)
@@ -151,8 +145,7 @@ class ExclusionManager:
                 and ".git" not in gitignore_path_obj.relative_to(self.root_dir).parts
             ):
                 gitignore_dir = gitignore_path_obj.parent.resolve()
-                if logger.is_debug_enabled():
-                    logger.debug(f"Found .gitignore: {gitignore_path_obj}")
+                logger.debug(f"Found .gitignore: {gitignore_path_obj}")
                 try:
                     with gitignore_path_obj.open("r", encoding="utf-8", errors="ignore") as f_in:
                         # Read lines, strip whitespace, filter out empty lines and comments
@@ -184,7 +177,7 @@ class ExclusionManager:
                                     source=str(gitignore_path_obj),
                                     lines=lines,
                                 )
-                        elif logger.is_debug_enabled():
+                        else:
                             logger.debug(f"Skipping empty or comment-only .gitignore: {gitignore_path_obj}")
                 except OSError as e:  # pragma: no cover
                     logger.error(f"Failed to read {gitignore_path_obj}: {e}")
