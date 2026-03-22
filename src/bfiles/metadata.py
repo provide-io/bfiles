@@ -6,24 +6,25 @@
 
 import datetime
 from pathlib import Path
-
 from typing import Any
 
 import attrs
 from provide.foundation import logger
 
 from bfiles.config import BfilesConfig
+from bfiles.utils import compute_file_hash, get_file_subtype
 
 _tiktoken_enc: Any = None
 
 
-def _get_tiktoken_encoder():
+def _get_tiktoken_encoder() -> Any:
     global _tiktoken_enc
     if _tiktoken_enc is None:
         import tiktoken
+
         _tiktoken_enc = tiktoken.get_encoding("cl100k_base")
     return _tiktoken_enc
-from bfiles.utils import compute_file_hash, get_file_subtype
+
 
 # Define valid operation choices for validation
 _VALID_OPERATIONS = frozenset({"included", "skipped", "empty", "duplicate", "excluded", "error"})
