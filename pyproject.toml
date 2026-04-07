@@ -43,10 +43,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://foundry.provide.io/bfiles/"
-Documentation = "https://foundry.provide.io/bfiles/"
-Repository = "https://foundry.provide.io/bfiles/repo"
-Issues = "https://foundry.provide.io/bfiles/issues"
+Homepage = "https://github.com/provide-io/bfiles"
+Documentation = "https://github.com/provide-io/bfiles"
+Repository = "https://github.com/provide-io/bfiles"
+Issues = "https://github.com/provide-io/bfiles/issues"
 
 [project.scripts]
 bf = "bfiles.cli:main"

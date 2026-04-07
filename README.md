@@ -113,7 +113,7 @@ uv sync
 
 ## Command Reference
 
-See `man bfiles` or `docs/reference.md` for complete documentation.
+See `man bfiles` or [`docs/reference.md`](https://github.com/provide-io/bfiles/blob/main/docs/reference.md) for complete documentation.
 
 ### Global Options
 
@@ -164,7 +164,7 @@ Files: 2 | Total Size: 1.8 KB | Duplicates: 0 | Empty: 0
 --- END OF BFILE bundle-name ---
 ```
 
-See `docs/specs.txt` for complete format specification.
+See [`docs/specs.txt`](https://github.com/provide-io/bfiles/blob/main/docs/specs.txt) for complete format specification.
 
 ## Configuration
 
